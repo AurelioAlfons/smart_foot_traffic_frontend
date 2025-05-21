@@ -19,6 +19,7 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
   final String defaultUrl = 'http://localhost:5000/heatmaps/default_map.html';
   int currentPage = 0;
   bool hoveringNavZone = false;
+  String? searchQuery;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
 
           final sidebar = TrafficSidebar(
             onLocationTap: (locationName) =>
-                print('📍 Selected location: $locationName'),
+                print('Selected location: $locationName'),
             onGenerate: handleGenerate,
             onReset: handleReset,
             selectedTrafficType: selectedType,
@@ -42,6 +43,8 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
             onTimeChanged: handleTimeChange,
             onDateChanged: (date) => setState(() => selectedDate = date),
             snapshotData: locationSnapshot,
+            searchQuery: searchQuery,
+            onSearchChanged: (value) => setState(() => searchQuery = value),
           );
 
           final heatmapStack = Stack(
@@ -131,11 +134,9 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
                                           icon: const Icon(Icons.chevron_left,
                                               color: Colors.white),
                                         ),
-                                        Text(
-                                          currentPage == 0
-                                              ? "  Heatmap  "
-                                              : "  Dashboard  ",
-                                          style: const TextStyle(
+                                        const Text(
+                                          "Heatmap",
+                                          style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 24,

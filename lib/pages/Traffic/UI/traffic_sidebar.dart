@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_foot_traffic_frontend/components/buttons/hover.dart';
+import 'package:smart_foot_traffic_frontend/components/buttons/search.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/widgets/filter/filter_tab.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/widgets/location/location_tab.dart';
 
@@ -24,6 +25,9 @@ class TrafficSidebar extends StatelessWidget {
   final void Function(String?) onDateChanged;
   final Map<String, dynamic>? snapshotData;
 
+  final String? searchQuery;
+  final void Function(String)? onSearchChanged;
+
   const TrafficSidebar({
     super.key,
     this.onLocationTap,
@@ -39,6 +43,8 @@ class TrafficSidebar extends StatelessWidget {
     required this.onTimeChanged,
     required this.onDateChanged,
     this.snapshotData,
+    required this.searchQuery,
+    required this.onSearchChanged,
   });
 
   @override
@@ -89,21 +95,9 @@ class TrafficSidebar extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          TextField(
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              hintText: 'Search',
-              hintStyle: const TextStyle(color: Colors.white70),
-              prefixIcon: const Icon(Icons.search, color: Colors.white70),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 46, 46, 46),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-            ),
+          LocationSearchBar(
+            query: searchQuery,
+            onChanged: onSearchChanged!,
           ),
           const SizedBox(height: 12),
           Theme(
@@ -114,11 +108,21 @@ class TrafficSidebar extends StatelessWidget {
               ),
             ),
             child: TabBar(
-              tabs: const [
-                Tab(text: 'List'),
-                Tab(text: 'Filters'),
-              ],
               indicatorColor: Colors.yellow[700],
+              tabs: const [
+                Tab(
+                  child: Text(
+                    'List',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    'Filters',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -127,6 +131,7 @@ class TrafficSidebar extends StatelessWidget {
                 LocationTab(
                   snapshotData: snapshotData,
                   onLocationTap: onLocationTap,
+                  searchQuery: searchQuery,
                 ),
                 _buildFiltersTab(),
               ],
