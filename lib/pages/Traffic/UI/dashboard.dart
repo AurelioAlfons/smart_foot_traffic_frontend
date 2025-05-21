@@ -17,26 +17,28 @@ class DashboardPanel extends StatelessWidget {
     this.isPlaceholder = false,
   });
 
-  Widget _buildChartBox(String title, Widget child) {
+  Widget _buildChartBox(String? title, Widget child, {bool showTitle = true}) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Expanded(child: child),
-          ],
-        ),
+        child: showTitle
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title ?? '',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(child: child),
+                ],
+              )
+            : child, // 🔥 Chart fills full space when title is hidden
       ),
     );
   }
@@ -65,11 +67,10 @@ class DashboardPanel extends StatelessWidget {
         children: [
           // 🔹 Box 1: Bar Chart
           (isPlaceholder || barChartUrl == null)
-              ? _buildPlaceholderBox('Bar Chart (Loading...)')
-              : _buildChartBox(
-                  'Traffic by Location (Plotly)',
-                  BarChartCard(chartUrl: barChartUrl!),
-                ),
+              ? _buildChartBox('Bar Chart (Loading...)', _buildPlaceholder(),
+                  showTitle: true)
+              : _buildChartBox(null, BarChartCard(chartUrl: barChartUrl!),
+                  showTitle: false),
 
           // 🔹 Box 2: Line Chart
           isPlaceholder
@@ -95,6 +96,15 @@ class DashboardPanel extends StatelessWidget {
                   const Center(child: Text("Insights placeholder")),
                 ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[800],
+        borderRadius: BorderRadius.circular(8),
       ),
     );
   }
