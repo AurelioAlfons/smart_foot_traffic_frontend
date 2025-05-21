@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_foot_traffic_frontend/components/buttons/hover.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/widgets/filter/filter_tab.dart';
+import 'package:smart_foot_traffic_frontend/pages/Traffic/widgets/location/location_tab.dart';
 
 class TrafficSidebar extends StatelessWidget {
   final void Function(String locationName)? onLocationTap;
@@ -48,7 +49,6 @@ class TrafficSidebar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 12),
-          // Header row with padding
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -88,10 +88,7 @@ class TrafficSidebar extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 12),
-
-          // Search bar full width
           TextField(
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
@@ -108,10 +105,7 @@ class TrafficSidebar extends StatelessWidget {
                   const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
             ),
           ),
-
           const SizedBox(height: 12),
-
-          // Tab bar full width
           Theme(
             data: Theme.of(context).copyWith(
               tabBarTheme: TabBarTheme(
@@ -127,51 +121,19 @@ class TrafficSidebar extends StatelessWidget {
               indicatorColor: Colors.yellow[700],
             ),
           ),
-
-          // Tab view
           Expanded(
             child: TabBarView(
               children: [
-                _buildListTab(),
+                LocationTab(
+                  snapshotData: snapshotData,
+                  onLocationTap: onLocationTap,
+                ),
                 _buildFiltersTab(),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildListTab() {
-    if (snapshotData == null || snapshotData!.isEmpty) {
-      return const Center(
-        child:
-            Text("No data available", style: TextStyle(color: Colors.white70)),
-      );
-    }
-
-    return ListView(
-      children: snapshotData!.entries.map((entry) {
-        final location = entry.key;
-        final data = entry.value;
-        return ExpansionTile(
-          title: Text(location, style: const TextStyle(color: Colors.white)),
-          children: [
-            _info("Type", data['type']?.toString()),
-            _info("Count", data['count']?.toString()),
-            _info("Date", data['date']?.toString()),
-            _info("Time", data['time']?.toString()),
-            _info("Season", data['season']?.toString()),
-            _info("Weather", data['weather']?.toString()),
-            _info("Temperature", data['temperature']?.toString()),
-          ],
-          onExpansionChanged: (expanded) {
-            if (expanded && onLocationTap != null) {
-              onLocationTap!(location);
-            }
-          },
-        );
-      }).toList(),
     );
   }
 
@@ -201,16 +163,6 @@ class TrafficSidebar extends StatelessWidget {
         }
       },
       onReset: onReset,
-    );
-  }
-
-  Widget _info(String title, String? value) {
-    return ListTile(
-      dense: true,
-      title: Text(
-        "$title: $value",
-        style: const TextStyle(color: Colors.white70, fontSize: 14),
-      ),
     );
   }
 }
