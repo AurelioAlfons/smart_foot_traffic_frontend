@@ -157,13 +157,13 @@ class TrafficSidebar extends StatelessWidget {
         return ExpansionTile(
           title: Text(location, style: const TextStyle(color: Colors.white)),
           children: [
-            _info("Type", data['type']),
-            _info("Count", data['count'].toString()),
-            _info("Date", data['date']),
-            _info("Time", data['time']),
-            _info("Season", data['season']),
-            _info("Weather", data['weather']),
-            _info("Temperature", data['temperature']),
+            _info("Type", data['type']?.toString()),
+            _info("Count", data['count']?.toString()),
+            _info("Date", data['date']?.toString()),
+            _info("Time", data['time']?.toString()),
+            _info("Season", data['season']?.toString()),
+            _info("Weather", data['weather']?.toString()),
+            _info("Temperature", data['temperature']?.toString()),
           ],
           onExpansionChanged: (expanded) {
             if (expanded && onLocationTap != null) {

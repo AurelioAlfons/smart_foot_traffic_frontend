@@ -1,7 +1,7 @@
 // heatmap_view.dart
 // ======================
 // - Displays the heatmap HTML using iframe
-// - Supports loading state with LinearProgressIndicator
+// - Now logs what URL is being used
 
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
@@ -20,10 +20,12 @@ class HeatmapView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Register view type for iframe
+    final viewType = 'heatmap-${heatmapUrl.hashCode}';
+    print("📡 iframe loading: $heatmapUrl");
+
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(
-      heatmapUrl,
+      viewType,
       (int viewId) => html.IFrameElement()
         ..src = heatmapUrl
         ..style.border = 'none'
@@ -34,7 +36,7 @@ class HeatmapView extends StatelessWidget {
 
     return Stack(
       children: [
-        HtmlElementView(viewType: heatmapUrl),
+        HtmlElementView(viewType: viewType),
         if (isLoading)
           const Align(
             alignment: Alignment.bottomCenter,

@@ -81,14 +81,17 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     });
 
     try {
-      final url = await TrafficLogic.generateHeatmap(date, time, type);
-      final snapshotList = await TrafficLogic.fetchSnapshot(date, time, type);
+      final formattedTime = time.contains(':00:00') ? time : '$time:00';
+
+      final url = await TrafficLogic.generateHeatmap(date, formattedTime, type);
+      final snapshotList =
+          await TrafficLogic.fetchSnapshot(date, formattedTime, type);
       final summaryData =
-          await TrafficLogic.fetchSummaryStats(date, time, type);
+          await TrafficLogic.fetchSummaryStats(date, formattedTime, type);
 
       final barUrl = ChartLogic.generateBarChartUrl(
         date: date,
-        time: time,
+        time: formattedTime,
         trafficType: type,
       );
 
@@ -97,8 +100,12 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
         for (var item in snapshotList) item['location']: item,
       };
 
+      await Future.delayed(
+          const Duration(seconds: 1)); // Give server time to finish
+
       setState(() {
-        generatedUrl = url;
+        generatedUrl =
+            "$url?t=${DateTime.now().millisecondsSinceEpoch}"; // force reload
         locationSnapshot = Map<String, dynamic>.from(snapshotMap);
         barChartData = summaryData['bar_chart'].cast<String, dynamic>();
         barChartUrl = barUrl;

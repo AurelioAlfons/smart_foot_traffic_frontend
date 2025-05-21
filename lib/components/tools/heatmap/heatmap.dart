@@ -8,6 +8,8 @@ class HeatmapCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("🧭 [HeatmapCard] received URL: $url");
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,

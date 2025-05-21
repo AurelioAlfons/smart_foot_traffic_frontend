@@ -17,15 +17,15 @@ class TrafficLogic {
       }),
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 202) {
       final result = jsonDecode(response.body);
-      return '$baseUrl/${result['heatmap_path']}';
+      return result['heatmap_url'];
     } else {
       throw Exception('Heatmap generation failed (${response.statusCode})');
     }
   }
 
-  /// 📍 Fetch location snapshot from /api/location_snapshot (List → will be converted in handler)
+  /// 📍 Fetch location snapshot from /api/location_snapshot
   static Future<List<dynamic>> fetchSnapshot(
       String date, String time, String type) async {
     final response = await http.post(
