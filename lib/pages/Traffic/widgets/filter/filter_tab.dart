@@ -91,10 +91,10 @@ class _FilterTabState extends State<FilterTab> {
             ["Cyclist Count", "Pedestrian Count", "Vehicle Count"],
             widget.onTypeChanged,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           DateDropdown(
               value: widget.selectedDate, onChanged: widget.onDateChanged),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           _dropdown(
             "Time",
             widget.selectedTime,
