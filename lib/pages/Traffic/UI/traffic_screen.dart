@@ -51,12 +51,12 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
             children: [
               HeatmapCard(url: generatedUrl ?? defaultUrl),
               if (isLoading)
-                const Align(
+                Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     child: LinearProgressIndicator(
-                      color: Colors.yellow,
+                      color: Colors.yellow[700],
                       backgroundColor: Colors.black26,
                     ),
                   ),

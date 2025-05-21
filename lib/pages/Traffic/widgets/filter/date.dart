@@ -27,32 +27,33 @@ class _DateDropdownState extends State<DateDropdown> {
           link: _layerLink,
           showWhenUnlinked: false,
           offset: const Offset(0, 60),
-          child: Material(
-            elevation: 4,
-            color: Colors.transparent,
-            child: Theme(
-              data: ThemeData.dark().copyWith(
-                colorScheme: ColorScheme.dark(
-                  primary: Colors.amber, // selected circle
-                  onPrimary: Colors.grey[800]!, // text inside selected
-                  surface: const Color(0xFF1C1C1C), // calendar bg
-                  onSurface: Colors.white, // default text
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: Material(
+              elevation: 4,
+              color: Colors.transparent,
+              child: Theme(
+                data: ThemeData.dark().copyWith(
+                  colorScheme: ColorScheme.dark(
+                    primary: Colors.yellow[700]!,
+                    onPrimary: Colors.grey[800]!,
+                    surface: const Color(0xFF1C1C1C),
+                    onSurface: Colors.yellow[700]!,
+                  ),
+                  dialogBackgroundColor: const Color(0xFF1C1C1C),
                 ),
-                dialogBackgroundColor: const Color(0xFF1C1C1C),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
+                child: Container(
+                  width: 320,
                   color: const Color(0xFF1C1C1C),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: CalendarDatePicker(
-                  initialDate: DateTime(2024, 3, 4),
-                  firstDate: DateTime(2024, 3, 4),
-                  lastDate: DateTime(2024, 3, 31),
-                  onDateChanged: (picked) {
-                    widget.onChanged(DateFormat('yyyy-MM-dd').format(picked));
-                    _removeOverlay();
-                  },
+                  child: CalendarDatePicker(
+                    initialDate: DateTime(2024, 3, 4),
+                    firstDate: DateTime(2024, 3, 4),
+                    lastDate: DateTime(2025, 3, 3),
+                    onDateChanged: (picked) {
+                      widget.onChanged(DateFormat('yyyy-MM-dd').format(picked));
+                      _removeOverlay();
+                    },
+                  ),
                 ),
               ),
             ),

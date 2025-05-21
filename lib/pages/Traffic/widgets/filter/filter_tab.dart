@@ -107,7 +107,7 @@ class _FilterTabState extends State<FilterTab> {
           _dropdown(
             "Year",
             widget.selectedYear,
-            ["2023", "2024", "2025"],
+            ["2024", "2025"],
             widget.onYearChanged,
           ),
           const SizedBox(height: 12),
