@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_foot_traffic_frontend/components/buttons/hover.dart';
+import 'package:smart_foot_traffic_frontend/pages/Traffic/widgets/filter/filter_tab.dart';
 
 class TrafficSidebar extends StatelessWidget {
   final void Function(String locationName)? onLocationTap;
@@ -19,6 +20,7 @@ class TrafficSidebar extends StatelessWidget {
   final bool isGenerated;
   final void Function(String?) onTrafficTypeChanged;
   final void Function(String?) onTimeChanged;
+  final void Function(String?) onDateChanged;
   final Map<String, dynamic>? snapshotData;
 
   const TrafficSidebar({
@@ -34,6 +36,7 @@ class TrafficSidebar extends StatelessWidget {
     required this.isGenerated,
     required this.onTrafficTypeChanged,
     required this.onTimeChanged,
+    required this.onDateChanged,
     this.snapshotData,
   });
 
@@ -45,19 +48,87 @@ class TrafficSidebar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 12),
-          const Text("Footscray Traffic",
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white)),
-          const SizedBox(height: 12),
-          const TabBar(
-            tabs: [
-              Tab(text: 'List'),
-              Tab(text: 'Filters'),
+          // Header row with padding
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  HoverableIconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.menu),
+                  ),
+                  const SizedBox(width: 6),
+                  const Text(
+                    "Footscray Traffic",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              InkWell(
+                onTap: () {},
+                hoverColor: Colors.transparent,
+                child: Row(
+                  children: [
+                    HoverableIconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.person),
+                    ),
+                    const SizedBox(width: 4),
+                    const Text(
+                      "Login",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
             ],
-            indicatorColor: Colors.yellow,
           ),
+
+          const SizedBox(height: 12),
+
+          // Search bar full width
+          TextField(
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: 'Search',
+              hintStyle: const TextStyle(color: Colors.white70),
+              prefixIcon: const Icon(Icons.search, color: Colors.white70),
+              filled: true,
+              fillColor: const Color.fromARGB(255, 46, 46, 46),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // Tab bar full width
+          Theme(
+            data: Theme.of(context).copyWith(
+              tabBarTheme: TabBarTheme(
+                labelColor: Colors.yellow[700],
+                unselectedLabelColor: Colors.white70,
+              ),
+            ),
+            child: TabBar(
+              tabs: const [
+                Tab(text: 'List'),
+                Tab(text: 'Filters'),
+              ],
+              indicatorColor: Colors.yellow[700],
+            ),
+          ),
+
+          // Tab view
           Expanded(
             child: TabBarView(
               children: [
@@ -74,9 +145,11 @@ class TrafficSidebar extends StatelessWidget {
   Widget _buildListTab() {
     if (snapshotData == null || snapshotData!.isEmpty) {
       return const Center(
-          child: Text("No data available",
-              style: TextStyle(color: Colors.white70)));
+        child:
+            Text("No data available", style: TextStyle(color: Colors.white70)),
+      );
     }
+
     return ListView(
       children: snapshotData!.entries.map((entry) {
         final location = entry.key;
@@ -103,84 +176,41 @@ class TrafficSidebar extends StatelessWidget {
   }
 
   Widget _buildFiltersTab() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _dropdown(
-              "Traffic Type",
-              selectedTrafficType,
-              ["Cyclist Count", "Pedestrian Count", "Vehicle Count"],
-              onTrafficTypeChanged),
-          _dropdown(
-              "Time",
-              selectedTime,
-              List.generate(24, (i) => "${i.toString().padLeft(2, '0')}:00"),
-              onTimeChanged),
-          const SizedBox(height: 20),
-          Center(
-            child: Column(
-              children: [
-                HoverableIconButton(
-                  onPressed: () {
-                    if (selectedDate != null &&
-                        selectedTime != null &&
-                        selectedTrafficType != null) {
-                      onGenerate(
-                        date: selectedDate!,
-                        time: selectedTime!,
-                        type: selectedTrafficType!,
-                        year: selectedYear,
-                        season: selectedSeason,
-                      );
-                    }
-                  },
-                  icon: const Icon(Icons.map),
-                ),
-                const SizedBox(height: 8),
-                HoverableIconButton(
-                  onPressed: onReset,
-                  icon: const Icon(Icons.refresh),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _dropdown(String label, String? value, List<String> items,
-      void Function(String?) onChanged) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: const TextStyle(color: Colors.white70)),
-          DropdownButton<String>(
-            isExpanded: true,
-            value: value,
-            dropdownColor: Colors.black,
-            iconEnabledColor: Colors.white,
-            style: const TextStyle(color: Colors.white),
-            underline: Container(height: 1, color: Colors.yellow),
-            items: items
-                .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                .toList(),
-            onChanged: onChanged,
-          )
-        ],
-      ),
+    return FilterTab(
+      selectedType: selectedTrafficType,
+      selectedDate: selectedDate,
+      selectedTime: selectedTime,
+      selectedYear: selectedYear,
+      selectedSeason: selectedSeason,
+      onTypeChanged: onTrafficTypeChanged,
+      onDateChanged: onDateChanged,
+      onTimeChanged: onTimeChanged,
+      onYearChanged: (_) {},
+      onSeasonChanged: (_) {},
+      onGenerate: () {
+        if (selectedDate != null &&
+            selectedTime != null &&
+            selectedTrafficType != null) {
+          onGenerate(
+            date: selectedDate!,
+            time: selectedTime!,
+            type: selectedTrafficType!,
+            year: selectedYear,
+            season: selectedSeason,
+          );
+        }
+      },
+      onReset: onReset,
     );
   }
 
   Widget _info(String title, String? value) {
     return ListTile(
       dense: true,
-      title: Text("$title: $value",
-          style: const TextStyle(color: Colors.white70, fontSize: 14)),
+      title: Text(
+        "$title: $value",
+        style: const TextStyle(color: Colors.white70, fontSize: 14),
+      ),
     );
   }
 }

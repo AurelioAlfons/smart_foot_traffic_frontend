@@ -1,8 +1,3 @@
-// hover.dart
-// =====================
-// - Reusable hoverable icon button
-// - Turns yellow when hovered
-
 import 'package:flutter/material.dart';
 
 class HoverableIconButton extends StatefulWidget {
@@ -27,12 +22,20 @@ class _HoverableIconButtonState extends State<HoverableIconButton> {
     return MouseRegion(
       onEnter: (_) => setState(() => _hovering = true),
       onExit: (_) => setState(() => _hovering = false),
-      child: IconButton(
-        onPressed: widget.onPressed,
-        icon: Icon(
-          widget.icon.icon,
-          color: _hovering ? Colors.yellow : Colors.white,
-          size: widget.icon.size,
+      child: GestureDetector(
+        onTap: widget.onPressed,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          decoration: BoxDecoration(
+            color: _hovering ? Colors.yellow[700] : Colors.transparent,
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(10),
+          child: Icon(
+            widget.icon.icon,
+            size: widget.icon.size ?? 24,
+            color: _hovering ? Colors.white : Colors.white,
+          ),
         ),
       ),
     );

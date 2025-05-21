@@ -40,6 +40,7 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
             isGenerated: generatedUrl != null,
             onTrafficTypeChanged: handleTrafficTypeChange,
             onTimeChanged: handleTimeChange,
+            onDateChanged: (date) => setState(() => selectedDate = date),
             snapshotData: locationSnapshot,
           );
 
