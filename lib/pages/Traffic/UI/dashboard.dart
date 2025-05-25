@@ -1,3 +1,11 @@
+// ====================================================
+// Dashboard Panel
+// ----------------------------------------------------
+// - Displays chart cards (bar, pie, line, insights)
+// - Uses placeholders if data is loading or missing
+// - Supports dynamic chart rendering via URL
+// ====================================================
+
 import 'package:flutter/material.dart';
 import 'package:smart_foot_traffic_frontend/components/tools/bar_chart/barchart_card.dart';
 
@@ -38,7 +46,7 @@ class DashboardPanel extends StatelessWidget {
                   Expanded(child: child),
                 ],
               )
-            : child, // 🔥 Chart fills full space when title is hidden
+            : child,
       ),
     );
   }
@@ -65,32 +73,32 @@ class DashboardPanel extends StatelessWidget {
         crossAxisSpacing: 12,
         childAspectRatio: 1.5,
         children: [
-          // 🔹 Box 1: Bar Chart
+          // Box 1: Bar Chart
           (isPlaceholder || barChartUrl == null)
-              ? _buildChartBox('Bar Chart (Loading...)', _buildPlaceholder(),
+              ? _buildChartBox('Bar Chart', _buildPlaceholder(),
                   showTitle: true)
               : _buildChartBox(null, BarChartCard(chartUrl: barChartUrl!),
                   showTitle: false),
 
-          // 🔹 Box 2: Line Chart
+          // Box 2: Line Chart
           isPlaceholder
-              ? _buildPlaceholderBox('Line Chart (Loading...)')
+              ? _buildPlaceholderBox('Line Chart')
               : _buildChartBox(
                   'Line Chart (Coming Soon)',
                   const Center(child: Text("Line chart placeholder")),
                 ),
 
-          // 🔹 Box 3: Pie Chart
+          // Box 3: Pie Chart
           isPlaceholder
-              ? _buildPlaceholderBox('Pie Chart (Loading...)')
+              ? _buildPlaceholderBox('Pie Chart')
               : _buildChartBox(
                   'Pie Chart (Coming Soon)',
                   const Center(child: Text("Pie chart placeholder")),
                 ),
 
-          // 🔹 Box 4: Insights
+          // Box 4: Insights
           isPlaceholder
-              ? _buildPlaceholderBox('Insights (Loading...)')
+              ? _buildPlaceholderBox('Insights')
               : _buildChartBox(
                   'Insights / Stats',
                   const Center(child: Text("Insights placeholder")),

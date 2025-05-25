@@ -1,3 +1,11 @@
+// ====================================================
+// Location Details Panel
+// ----------------------------------------------------
+// - Shows traffic info like type, count, date, time, etc.
+// - Formats time into a readable hourly range
+// - Displays "N/A" if any field is missing
+// ====================================================
+
 import 'package:flutter/material.dart';
 
 class LocationDetailsPanel extends StatelessWidget {

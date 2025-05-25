@@ -1,3 +1,11 @@
+// ====================================================
+// Traffic Handlers
+// ----------------------------------------------------
+// - Handles filter changes and heatmap/chart generation
+// - Stores selected filters, loading state, and snapshots
+// - Calls backend logic to fetch heatmap and summary data
+// ====================================================
+
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
@@ -16,7 +24,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
   String? barChartUrl;
   bool isLoading = false;
 
-  Map<String, dynamic> locationSnapshot = {}; // ✅ Fixed type
+  Map<String, dynamic> locationSnapshot = {};
   Map<String, dynamic>? barChartData;
 
   bool get hasRequiredFilters =>
@@ -95,13 +103,12 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
         trafficType: type,
       );
 
-      // ✅ Convert List to Map using 'location' as key
+      // Convert List to Map using 'location' as key
       final snapshotMap = {
         for (var item in snapshotList) item['location']: item,
       };
 
-      await Future.delayed(
-          const Duration(seconds: 1)); // Give server time to finish
+      await Future.delayed(const Duration(seconds: 1));
 
       setState(() {
         generatedUrl =
@@ -111,7 +118,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
         barChartUrl = barUrl;
       });
     } catch (e) {
-      print('🔥 Error in handleGenerate: $e');
+      print('Error in handleGenerate: $e');
     }
 
     setState(() => isLoading = false);

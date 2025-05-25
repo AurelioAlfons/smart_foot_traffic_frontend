@@ -1,3 +1,11 @@
+// ====================================================
+// Location Search Bar
+// ----------------------------------------------------
+// - Text input for searching locations
+// - Calls onChanged when user types
+// - Styled with dark theme and search icon
+// ====================================================
+
 import 'package:flutter/material.dart';
 
 class LocationSearchBar extends StatelessWidget {

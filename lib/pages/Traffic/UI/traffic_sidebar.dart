@@ -1,3 +1,11 @@
+// ====================================================
+// Traffic Sidebar Panel
+// ----------------------------------------------------
+// - Has location list and filter tabs
+// - Lets users search, filter, and generate heatmaps
+// - Handles year/season dropdown, reset, and login
+// ====================================================
+
 import 'package:flutter/material.dart';
 import 'package:smart_foot_traffic_frontend/components/buttons/hover.dart';
 import 'package:smart_foot_traffic_frontend/components/buttons/search.dart';
@@ -68,11 +76,13 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
             children: [
               Row(
                 children: [
+                  // Menu button with hover effect
                   HoverableIconButton(
                     onPressed: () {},
                     icon: const Icon(Icons.menu),
                   ),
                   const SizedBox(width: 6),
+                  // Title
                   const Text(
                     "Footscray Traffic",
                     style: TextStyle(
@@ -88,6 +98,7 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
                 hoverColor: Colors.transparent,
                 child: Row(
                   children: [
+                    // Login - To be implemented
                     HoverableIconButton(
                       onPressed: () {},
                       icon: const Icon(Icons.person),
@@ -103,6 +114,8 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
             ],
           ),
           const SizedBox(height: 12),
+
+          // Search bar for location search
           LocationSearchBar(
             query: widget.searchQuery,
             onChanged: widget.onSearchChanged!,
@@ -115,15 +128,19 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
                 unselectedLabelColor: Colors.white70,
               ),
             ),
+
+            // Tab - List & Filters
             child: TabBar(
               indicatorColor: Colors.yellow[700],
               tabs: const [
+                // List
                 Tab(
                   child: Text(
                     'List',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                 ),
+                // Filters
                 Tab(
                   child: Text(
                     'Filters',
@@ -136,11 +153,13 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
           Expanded(
             child: TabBarView(
               children: [
+                // Location List Tab
                 LocationTab(
                   snapshotData: widget.snapshotData,
                   onLocationTap: widget.onLocationTap,
                   searchQuery: widget.searchQuery,
                 ),
+                // Filters Tab
                 _buildFiltersTab(),
               ],
             ),
@@ -150,6 +169,7 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
     );
   }
 
+  // Builds the Filters tab with all filter options
   Widget _buildFiltersTab() {
     return FilterTab(
       selectedType: widget.selectedTrafficType,

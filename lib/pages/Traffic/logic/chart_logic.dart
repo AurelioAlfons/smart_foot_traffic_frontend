@@ -1,4 +1,10 @@
-// 📄 lib/pages/traffic/logic/chart_logic.dart
+// ====================================================
+// Chart Logic Generator
+// ----------------------------------------------------
+// - Builds safe bar chart URL using date, time, and type
+// - Removes spaces/colons for valid filenames
+// - Placeholder for future pie/line chart logic
+// ====================================================
 
 class ChartLogic {
   static String generateBarChartUrl({

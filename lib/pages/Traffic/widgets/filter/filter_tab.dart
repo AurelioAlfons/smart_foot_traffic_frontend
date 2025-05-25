@@ -1,3 +1,11 @@
+// ====================================================
+// Filter Tab Panel
+// ----------------------------------------------------
+// - Lets users pick traffic type, date, time, year, season
+// - Validates input before generating the heatmap
+// - Handles reset with snack messages for feedback
+// ====================================================
+
 import 'package:flutter/material.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/widgets/filter/date.dart';
 
@@ -37,6 +45,7 @@ class FilterTab extends StatefulWidget {
   State<FilterTab> createState() => _FilterTabState();
 }
 
+// Seasons
 class _FilterTabState extends State<FilterTab> {
   List<String> seasonOptions = [
     "Season",
@@ -48,11 +57,12 @@ class _FilterTabState extends State<FilterTab> {
 
   void _showSnack(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
+      // Alert message with red background
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.red[700],
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 600),
       ),
     );
   }
@@ -64,11 +74,13 @@ class _FilterTabState extends State<FilterTab> {
     final year = widget.selectedYear;
     final season = widget.selectedSeason;
 
+    // Validate required fields
     if (date == null || time == null || type == null) {
       _showSnack("Date, Time, and Traffic Type are required.");
       return;
     }
 
+    // Validate year and season selection
     final yearSelected = year != null && year.isNotEmpty;
     final seasonSelected = season != null && season.isNotEmpty;
     if ((yearSelected && !seasonSelected) ||
@@ -95,6 +107,8 @@ class _FilterTabState extends State<FilterTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 12),
+
+          // Traffic Type Dropdown
           _dropdown(
             "Traffic Type",
             widget.selectedType,
@@ -102,13 +116,17 @@ class _FilterTabState extends State<FilterTab> {
             widget.onTypeChanged,
           ),
           const SizedBox(height: 14),
+
+          // Date Calendar
           DateDropdown(
             value: widget.selectedDate,
             onChanged: widget.onDateChanged,
             selectedYear: widget.selectedYear,
-            selectedSeason: widget.selectedSeason, // ✅ Pass season too
+            selectedSeason: widget.selectedSeason,
           ),
           const SizedBox(height: 14),
+
+          // Time Dropdown
           _dropdown(
             "Time",
             widget.selectedTime,
@@ -118,14 +136,16 @@ class _FilterTabState extends State<FilterTab> {
           const SizedBox(height: 12),
           const Divider(color: Colors.white24, thickness: 1, height: 16),
           const SizedBox(height: 12),
+
+          // Year dropdown & validate season
           _dropdown(
             "Year",
             widget.selectedYear,
             ["Year", "2024", "2025"],
             (value) {
               widget.onYearChanged(value);
-              widget.onSeasonChanged("Season"); // reset season
-              widget.onDateChanged(null); // reset date
+              widget.onSeasonChanged("Season");
+              widget.onDateChanged(null);
 
               // Dynamically update season options
               setState(() {
@@ -144,6 +164,8 @@ class _FilterTabState extends State<FilterTab> {
             },
           ),
           const SizedBox(height: 12),
+
+          // Season dropdown
           _dropdown(
             "Season",
             widget.selectedSeason,
@@ -156,6 +178,8 @@ class _FilterTabState extends State<FilterTab> {
           const SizedBox(height: 12),
           const Divider(color: Colors.white24, thickness: 1, height: 16),
           const SizedBox(height: 22),
+
+          // Generate button
           ElevatedButton(
             onPressed: _handleGenerate,
             style: ElevatedButton.styleFrom(
@@ -169,6 +193,8 @@ class _FilterTabState extends State<FilterTab> {
             child: const Text('Generate Heatmap'),
           ),
           const SizedBox(height: 12),
+
+          // Reset button
           ElevatedButton(
             onPressed: _handleReset,
             style: ElevatedButton.styleFrom(
@@ -186,6 +212,7 @@ class _FilterTabState extends State<FilterTab> {
     );
   }
 
+  // Helper method to create dropdown widgets
   Widget _dropdown(
     String label,
     String? value,

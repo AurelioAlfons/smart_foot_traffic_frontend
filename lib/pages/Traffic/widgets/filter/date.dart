@@ -1,3 +1,11 @@
+// ====================================================
+// Date Dropdown Picker
+// ----------------------------------------------------
+// - Shows calendar overlay when clicked
+// - Filters date range by selected year and season
+// - Returns formatted date string when picked
+// ====================================================
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -24,7 +32,7 @@ class _DateDropdownState extends State<DateDropdown> {
   OverlayEntry? _overlayEntry;
 
   void _showCalendarOverlay() {
-    // Base range (overall project limits)
+    // Date range based on dataset
     DateTime firstDate = DateTime(2024, 3, 4);
     DateTime lastDate = DateTime(2025, 3, 3);
 

@@ -1,7 +1,10 @@
-// heatmap_view.dart
-// ======================
-// - Displays the heatmap HTML using iframe
-// - Now logs what URL is being used
+// ====================================================
+// Heatmap View (Web Only)
+// ----------------------------------------------------
+// - Shows heatmap HTML in an iframe
+// - Registers unique view ID using hash of the URL
+// - Displays loading bar if isLoading is true
+// ====================================================
 
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;

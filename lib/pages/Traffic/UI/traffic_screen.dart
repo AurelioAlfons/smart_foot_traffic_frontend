@@ -1,3 +1,11 @@
+// ====================================================
+// Traffic Screen UI
+// ----------------------------------------------------
+// - Displays sidebar filters and heatmap/dashboard view
+// - Toggles between heatmap and summary panel
+// - Loads heatmap with progress indicator and user filters
+// ====================================================
+
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
@@ -16,8 +24,11 @@ class TrafficScreen extends StatefulWidget {
 }
 
 class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
+  // URLs for default heatmap
   final String defaultUrl = 'http://localhost:5000/heatmaps/default_map.html';
+  // For navigation between heatmap and dashboard
   int currentPage = 0;
+  // Delcare zone for navbar hover effect
   bool hoveringNavZone = false;
   String? searchQuery;
 
@@ -26,6 +37,7 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
+          //
           final isWide = constraints.maxWidth >= 800;
 
           final sidebar = TrafficSidebar(
@@ -47,8 +59,10 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
             onSearchChanged: (value) => setState(() => searchQuery = value),
           );
 
+          // Stack the heatmap
           final heatmapStack = Stack(
             children: [
+              // Heatmap card with generated URL or default
               HeatmapCard(url: generatedUrl ?? defaultUrl),
               if (isLoading)
                 Align(
@@ -64,6 +78,7 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
             ],
           );
 
+          //
           return isWide
               ? Stack(
                   children: [
@@ -126,6 +141,7 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
+                                        // Left -> Go to Dashboard
                                         HoverableIconButton(
                                           onPressed: () {
                                             setState(() => currentPage =
@@ -134,14 +150,18 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
                                           icon: const Icon(Icons.chevron_left,
                                               color: Colors.white),
                                         ),
-                                        const Text(
-                                          "Heatmap",
-                                          style: TextStyle(
+                                        // Title
+                                        Text(
+                                          currentPage == 0
+                                              ? "Heatmap"
+                                              : "Dashboard",
+                                          style: const TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 24,
                                           ),
                                         ),
+                                        // Right -> Go to Heatmap
                                         HoverableIconButton(
                                           onPressed: () {
                                             setState(() => currentPage =

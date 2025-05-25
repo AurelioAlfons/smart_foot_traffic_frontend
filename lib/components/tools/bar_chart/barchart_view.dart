@@ -1,3 +1,11 @@
+// ====================================================
+// Bar Chart View (Web Only)
+// ----------------------------------------------------
+// - Embeds HTML iframe to show bar chart URL
+// - Registers a unique view ID for each chart
+// - Shows loader until iframe finishes loading
+// ====================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:ui' as ui;

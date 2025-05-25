@@ -1,10 +1,18 @@
+// ====================================================
+// Traffic Logic (API Calls)
+// ----------------------------------------------------
+// - Sends POST request to generate heatmap HTML
+// - Fetches snapshot data for all locations
+// - Fetches summary stats for charts (bar, pie, etc.)
+// ====================================================
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class TrafficLogic {
   static const String baseUrl = 'http://localhost:5000';
 
-  /// 🔥 Generate heatmap and return the full URL to the HTML
+  /// Generate heatmap and return the full URL to the HTML
   static Future<String> generateHeatmap(
       String date, String time, String type) async {
     final response = await http.post(
@@ -25,7 +33,7 @@ class TrafficLogic {
     }
   }
 
-  /// 📍 Fetch location snapshot from /api/location_snapshot
+  /// Fetch location snapshot from /api/location_snapshot
   static Future<List<dynamic>> fetchSnapshot(
       String date, String time, String type) async {
     final response = await http.post(
@@ -45,7 +53,7 @@ class TrafficLogic {
     }
   }
 
-  /// 📊 Fetch summary statistics from /api/summary_stats
+  /// Fetch summary statistics from /api/summary_stats
   static Future<Map<String, dynamic>> fetchSummaryStats(
       String date, String time, String type) async {
     final response = await http.post(

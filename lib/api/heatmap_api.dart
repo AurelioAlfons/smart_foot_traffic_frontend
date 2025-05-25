@@ -1,3 +1,11 @@
+// ====================================================
+// Preload Heatmap Request
+// ----------------------------------------------------
+// - Sends POST request to preload heatmap in backend
+// - Uses traffic type, date, time, and season as input
+// - Prints result status to console
+// ====================================================
+
 // ignore_for_file: avoid_print
 
 import 'package:http/http.dart' as http;

@@ -1,3 +1,11 @@
+// ====================================================
+// Location Tab List
+// ----------------------------------------------------
+// - Shows all locations with search and expand feature
+// - Expanding a location shows its traffic details
+// - Calls callback when a location is tapped
+// ====================================================
+
 import 'package:flutter/material.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/widgets/location/location_details.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/widgets/location/locations.dart';

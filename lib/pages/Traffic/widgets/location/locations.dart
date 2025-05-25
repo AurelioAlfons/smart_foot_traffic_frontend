@@ -1,3 +1,10 @@
+// ====================================================
+// All Sensor Locations
+// ----------------------------------------------------
+// - List of all fixed traffic monitoring locations
+// - Used for display, filtering, and data mapping
+// ====================================================
+
 const List<String> allLocations = [
   "Footscray Library Car Park",
   "Footscray Market Hopkins And Irving",

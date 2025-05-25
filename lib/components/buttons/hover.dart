@@ -1,3 +1,11 @@
+// ====================================================
+// Hoverable Icon Button
+// ----------------------------------------------------
+// - Circle icon button that changes color on hover
+// - Calls onPressed when tapped
+// - Used for interactive UI navigation/actions
+// ====================================================
+
 import 'package:flutter/material.dart';
 
 class HoverableIconButton extends StatefulWidget {
