@@ -4,11 +4,13 @@ import 'package:intl/intl.dart';
 class DateDropdown extends StatefulWidget {
   final String? value;
   final void Function(String?) onChanged;
+  final String? selectedYear; // <-- Add this
 
   const DateDropdown({
     super.key,
     required this.value,
     required this.onChanged,
+    this.selectedYear, // <-- Include it in constructor
   });
 
   @override
@@ -20,6 +22,18 @@ class _DateDropdownState extends State<DateDropdown> {
   OverlayEntry? _overlayEntry;
 
   void _showCalendarOverlay() {
+    // Determine date range based on selectedYear
+    DateTime firstDate = DateTime(2024, 3, 4);
+    DateTime lastDate = DateTime(2025, 3, 3);
+
+    if (widget.selectedYear == "2024") {
+      firstDate = DateTime(2024, 3, 4);
+      lastDate = DateTime(2024, 12, 31);
+    } else if (widget.selectedYear == "2025") {
+      firstDate = DateTime(2025, 1, 1);
+      lastDate = DateTime(2025, 3, 3);
+    }
+
     _overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         width: _getWidgetWidth(),
@@ -46,9 +60,9 @@ class _DateDropdownState extends State<DateDropdown> {
                   width: 320,
                   color: const Color(0xFF1C1C1C),
                   child: CalendarDatePicker(
-                    initialDate: DateTime(2024, 3, 4),
-                    firstDate: DateTime(2024, 3, 4),
-                    lastDate: DateTime(2025, 3, 3),
+                    initialDate: firstDate,
+                    firstDate: firstDate,
+                    lastDate: lastDate,
                     onDateChanged: (picked) {
                       widget.onChanged(DateFormat('yyyy-MM-dd').format(picked));
                       _removeOverlay();

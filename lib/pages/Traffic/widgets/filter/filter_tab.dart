@@ -74,7 +74,6 @@ class _FilterTabState extends State<FilterTab> {
 
   void _handleReset() {
     widget.onReset();
-    widget.onReset();
     widget.onYearChanged("Year");
     widget.onSeasonChanged("Season");
     _showSnack("Filters have been reset.");
@@ -96,7 +95,10 @@ class _FilterTabState extends State<FilterTab> {
           ),
           const SizedBox(height: 14),
           DateDropdown(
-              value: widget.selectedDate, onChanged: widget.onDateChanged),
+            value: widget.selectedDate,
+            onChanged: widget.onDateChanged,
+            selectedYear: widget.selectedYear, // ✅ Year passed to calendar
+          ),
           const SizedBox(height: 14),
           _dropdown(
             "Time",
@@ -113,7 +115,7 @@ class _FilterTabState extends State<FilterTab> {
             ["Year", "2024", "2025"],
             (value) {
               widget.onYearChanged(value);
-              widget.onDateChanged(null);
+              widget.onDateChanged(null); // Clear date when year changes
             },
           ),
           const SizedBox(height: 12),
@@ -123,7 +125,7 @@ class _FilterTabState extends State<FilterTab> {
             ["Season", "Summer", "Autumn", "Winter", "Spring"],
             (value) {
               widget.onSeasonChanged(value);
-              widget.onDateChanged(null);
+              widget.onDateChanged(null); // Optional: clear date too
             },
           ),
           const SizedBox(height: 12),
