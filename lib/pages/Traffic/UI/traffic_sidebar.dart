@@ -4,7 +4,7 @@ import 'package:smart_foot_traffic_frontend/components/buttons/search.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/widgets/filter/filter_tab.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/widgets/location/location_tab.dart';
 
-class TrafficSidebar extends StatelessWidget {
+class TrafficSidebar extends StatefulWidget {
   final void Function(String locationName)? onLocationTap;
   final Future<void> Function({
     required String date,
@@ -46,6 +46,14 @@ class TrafficSidebar extends StatelessWidget {
     required this.searchQuery,
     required this.onSearchChanged,
   });
+
+  @override
+  State<TrafficSidebar> createState() => _TrafficSidebarState();
+}
+
+class _TrafficSidebarState extends State<TrafficSidebar> {
+  String? selectedYear = "Year";
+  String? selectedSeason = "Season";
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +104,8 @@ class TrafficSidebar extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           LocationSearchBar(
-            query: searchQuery,
-            onChanged: onSearchChanged!,
+            query: widget.searchQuery,
+            onChanged: widget.onSearchChanged!,
           ),
           const SizedBox(height: 12),
           Theme(
@@ -129,9 +137,9 @@ class TrafficSidebar extends StatelessWidget {
             child: TabBarView(
               children: [
                 LocationTab(
-                  snapshotData: snapshotData,
-                  onLocationTap: onLocationTap,
-                  searchQuery: searchQuery,
+                  snapshotData: widget.snapshotData,
+                  onLocationTap: widget.onLocationTap,
+                  searchQuery: widget.searchQuery,
                 ),
                 _buildFiltersTab(),
               ],
@@ -144,30 +152,44 @@ class TrafficSidebar extends StatelessWidget {
 
   Widget _buildFiltersTab() {
     return FilterTab(
-      selectedType: selectedTrafficType,
-      selectedDate: selectedDate,
-      selectedTime: selectedTime,
+      selectedType: widget.selectedTrafficType,
+      selectedDate: widget.selectedDate,
+      selectedTime: widget.selectedTime,
       selectedYear: selectedYear,
       selectedSeason: selectedSeason,
-      onTypeChanged: onTrafficTypeChanged,
-      onDateChanged: onDateChanged,
-      onTimeChanged: onTimeChanged,
-      onYearChanged: (_) {},
-      onSeasonChanged: (_) {},
+      onTypeChanged: widget.onTrafficTypeChanged,
+      onDateChanged: widget.onDateChanged,
+      onTimeChanged: widget.onTimeChanged,
+      onYearChanged: (value) {
+        setState(() {
+          selectedYear = value;
+        });
+      },
+      onSeasonChanged: (value) {
+        setState(() {
+          selectedSeason = value;
+        });
+      },
       onGenerate: () {
-        if (selectedDate != null &&
-            selectedTime != null &&
-            selectedTrafficType != null) {
-          onGenerate(
-            date: selectedDate!,
-            time: selectedTime!,
-            type: selectedTrafficType!,
+        if (widget.selectedDate != null &&
+            widget.selectedTime != null &&
+            widget.selectedTrafficType != null) {
+          widget.onGenerate(
+            date: widget.selectedDate!,
+            time: widget.selectedTime!,
+            type: widget.selectedTrafficType!,
             year: selectedYear,
             season: selectedSeason,
           );
         }
       },
-      onReset: onReset,
+      onReset: () {
+        widget.onReset();
+        setState(() {
+          selectedYear = "Year";
+          selectedSeason = "Season";
+        });
+      },
     );
   }
 }

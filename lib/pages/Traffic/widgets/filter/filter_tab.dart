@@ -74,6 +74,9 @@ class _FilterTabState extends State<FilterTab> {
 
   void _handleReset() {
     widget.onReset();
+    widget.onReset();
+    widget.onYearChanged("Year");
+    widget.onSeasonChanged("Season");
     _showSnack("Filters have been reset.");
   }
 
