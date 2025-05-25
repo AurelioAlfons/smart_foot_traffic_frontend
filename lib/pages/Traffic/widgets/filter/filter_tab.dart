@@ -38,6 +38,14 @@ class FilterTab extends StatefulWidget {
 }
 
 class _FilterTabState extends State<FilterTab> {
+  List<String> seasonOptions = [
+    "Season",
+    "Summer",
+    "Autumn",
+    "Winter",
+    "Spring"
+  ];
+
   void _showSnack(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -116,18 +124,33 @@ class _FilterTabState extends State<FilterTab> {
             ["Year", "2024", "2025"],
             (value) {
               widget.onYearChanged(value);
-              widget.onDateChanged(null);
-              widget.onSeasonChanged("Season");
+              widget.onSeasonChanged("Season"); // reset season
+              widget.onDateChanged(null); // reset date
+
+              // Dynamically update season options
+              setState(() {
+                if (value == "2025") {
+                  seasonOptions = ["Season", "Summer", "Autumn"];
+                } else {
+                  seasonOptions = [
+                    "Season",
+                    "Summer",
+                    "Autumn",
+                    "Winter",
+                    "Spring"
+                  ];
+                }
+              });
             },
           ),
           const SizedBox(height: 12),
           _dropdown(
             "Season",
             widget.selectedSeason,
-            ["Season", "Summer", "Autumn", "Winter", "Spring"],
+            seasonOptions,
             (value) {
               widget.onSeasonChanged(value);
-              widget.onDateChanged(null); // Clear date when season changes
+              widget.onDateChanged(null);
             },
           ),
           const SizedBox(height: 12),

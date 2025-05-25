@@ -54,9 +54,16 @@ class _DateDropdownState extends State<DateDropdown> {
           firstDate = DateTime(2024, 12, 1);
           lastDate = DateTime(2024, 12, 31);
         }
-      } else if (season == "Autumn") {
-        firstDate = DateTime(year, 3, 1);
-        lastDate = DateTime(year, 5, 31);
+      }
+      if (season == "Autumn") {
+        if (year == 2025) {
+          // Only allow March 1–3 in 2025
+          firstDate = DateTime(2025, 3, 1);
+          lastDate = DateTime(2025, 3, 3);
+        } else {
+          firstDate = DateTime(year, 3, 1);
+          lastDate = DateTime(year, 5, 31);
+        }
       } else if (season == "Winter") {
         firstDate = DateTime(year, 6, 1);
         lastDate = DateTime(year, 8, 31);
