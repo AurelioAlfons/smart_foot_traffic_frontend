@@ -107,15 +107,21 @@ class _FilterTabState extends State<FilterTab> {
           _dropdown(
             "Year",
             widget.selectedYear,
-            ["2024", "2025"],
-            widget.onYearChanged,
+            ["Year", "2024", "2025"],
+            (value) {
+              widget.onYearChanged(value);
+              widget.onDateChanged(null);
+            },
           ),
           const SizedBox(height: 12),
           _dropdown(
             "Season",
             widget.selectedSeason,
-            ["Summer", "Autumn", "Winter", "Spring"],
-            widget.onSeasonChanged,
+            ["Season", "Summer", "Autumn", "Winter", "Spring"],
+            (value) {
+              widget.onSeasonChanged(value);
+              widget.onDateChanged(null);
+            },
           ),
           const SizedBox(height: 12),
           const Divider(color: Colors.white24, thickness: 1, height: 16),
