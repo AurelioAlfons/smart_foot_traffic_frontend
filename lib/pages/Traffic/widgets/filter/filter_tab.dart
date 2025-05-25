@@ -97,7 +97,8 @@ class _FilterTabState extends State<FilterTab> {
           DateDropdown(
             value: widget.selectedDate,
             onChanged: widget.onDateChanged,
-            selectedYear: widget.selectedYear, // ✅ Year passed to calendar
+            selectedYear: widget.selectedYear,
+            selectedSeason: widget.selectedSeason, // ✅ Pass season too
           ),
           const SizedBox(height: 14),
           _dropdown(
@@ -115,7 +116,8 @@ class _FilterTabState extends State<FilterTab> {
             ["Year", "2024", "2025"],
             (value) {
               widget.onYearChanged(value);
-              widget.onDateChanged(null); // Clear date when year changes
+              widget.onDateChanged(null);
+              widget.onSeasonChanged("Season");
             },
           ),
           const SizedBox(height: 12),
@@ -125,7 +127,7 @@ class _FilterTabState extends State<FilterTab> {
             ["Season", "Summer", "Autumn", "Winter", "Spring"],
             (value) {
               widget.onSeasonChanged(value);
-              widget.onDateChanged(null); // Optional: clear date too
+              widget.onDateChanged(null); // Clear date when season changes
             },
           ),
           const SizedBox(height: 12),

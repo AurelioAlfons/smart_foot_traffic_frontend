@@ -4,13 +4,15 @@ import 'package:intl/intl.dart';
 class DateDropdown extends StatefulWidget {
   final String? value;
   final void Function(String?) onChanged;
-  final String? selectedYear; // <-- Add this
+  final String? selectedYear;
+  final String? selectedSeason;
 
   const DateDropdown({
     super.key,
     required this.value,
     required this.onChanged,
-    this.selectedYear, // <-- Include it in constructor
+    this.selectedYear,
+    this.selectedSeason,
   });
 
   @override
@@ -22,16 +24,46 @@ class _DateDropdownState extends State<DateDropdown> {
   OverlayEntry? _overlayEntry;
 
   void _showCalendarOverlay() {
-    // Determine date range based on selectedYear
+    // Base range (overall project limits)
     DateTime firstDate = DateTime(2024, 3, 4);
     DateTime lastDate = DateTime(2025, 3, 3);
 
+    // Year filtering
     if (widget.selectedYear == "2024") {
       firstDate = DateTime(2024, 3, 4);
       lastDate = DateTime(2024, 12, 31);
     } else if (widget.selectedYear == "2025") {
       firstDate = DateTime(2025, 1, 1);
       lastDate = DateTime(2025, 3, 3);
+    }
+
+    // Season filtering within year range
+    if (widget.selectedSeason != null &&
+        widget.selectedSeason != "Season" &&
+        widget.selectedYear != null &&
+        widget.selectedYear != "Year") {
+      final season = widget.selectedSeason!;
+      final int year = int.tryParse(widget.selectedYear!) ?? 0;
+
+      if (season == "Summer") {
+        if (year == 2025) {
+          firstDate = DateTime(2025, 1, 1);
+          lastDate = DateTime(2025, 2, 28);
+        } else if (year == 2024) {
+          // Project starts Mar 4, so skip Jan–Feb 2024
+          firstDate = DateTime(2024, 12, 1);
+          lastDate = DateTime(2024, 12, 31);
+        }
+      } else if (season == "Autumn") {
+        firstDate = DateTime(year, 3, 1);
+        lastDate = DateTime(year, 5, 31);
+      } else if (season == "Winter") {
+        firstDate = DateTime(year, 6, 1);
+        lastDate = DateTime(year, 8, 31);
+      } else if (season == "Spring") {
+        firstDate = DateTime(year, 9, 1);
+        lastDate = DateTime(year, 11, 30);
+      }
     }
 
     _overlayEntry = OverlayEntry(
