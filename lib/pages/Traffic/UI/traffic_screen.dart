@@ -67,15 +67,16 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
               HeatmapCard(url: generatedUrl ?? defaultUrl),
               if (isLoading)
                 Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
+                  alignment: Alignment.topCenter,
+                  child: SizedBox(
+                    height: 14,
+                    width: double.infinity,
                     child: LinearProgressIndicator(
                       color: Colors.yellow[700],
                       backgroundColor: Colors.black26,
                     ),
                   ),
-                ),
+                )
             ],
           );
 
@@ -105,6 +106,8 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
                                       time: selectedTime!,
                                       trafficType: selectedType!,
                                       barChartUrl: barChartUrl,
+                                      isPlaceholder: false,
+                                      isLoading: isLoading,
                                     )
                                   : const DashboardPanel(isPlaceholder: true),
                             ],
