@@ -9,6 +9,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/chart_logic.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/traffic_logic.dart';
 
@@ -78,7 +79,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     String? year,
     String? season,
   }) async {
-    print('🚀 Generating heatmap and charts...');
+    print('Generating heatmap and charts...');
     setState(() {
       isLoading = true;
       selectedType = type;
@@ -107,24 +108,36 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
         trafficType: type,
       );
 
-      // Convert List to Map using 'location' as key
       final snapshotMap = {
         for (var item in snapshotList) item['location']: item,
       };
 
-      await Future.delayed(const Duration(seconds: 1));
+      final isReady = await _pingHeatmap(url);
 
-      setState(() {
-        generatedUrl =
-            "$url?t=${DateTime.now().millisecondsSinceEpoch}"; // force reload
-        locationSnapshot = Map<String, dynamic>.from(snapshotMap);
-        barChartData = summaryData['bar_chart'].cast<String, dynamic>();
-        barChartUrl = barUrl;
-      });
+      if (isReady) {
+        setState(() {
+          generatedUrl = "$url?t=${DateTime.now().millisecondsSinceEpoch}";
+          locationSnapshot = Map<String, dynamic>.from(snapshotMap);
+          barChartData = summaryData['bar_chart'].cast<String, dynamic>();
+          barChartUrl = barUrl;
+        });
+      } else {
+        print("Heatmap HTML not ready yet.");
+      }
     } catch (e) {
       print('Error in handleGenerate: $e');
     }
 
     setState(() => isLoading = false);
+  }
+
+  Future<bool> _pingHeatmap(String url) async {
+    try {
+      final response =
+          await http.head(Uri.parse(url)).timeout(const Duration(seconds: 2));
+      return response.statusCode == 200;
+    } catch (_) {
+      return false;
+    }
   }
 }

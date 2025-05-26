@@ -9,11 +9,11 @@ class ChartLogic {
   // BASE URL SETUP:
 
   // ← LOCAL (for dev)
-  // static const String baseUrl = 'http://localhost:5000';
+  static const String baseUrl = 'http://localhost:5000';
 
   // ← CLOUD (Render)
-  static const String baseUrl =
-      'https://smart-foot-traffic-backend.onrender.com';
+  // static const String baseUrl =
+  //     'https://smart-foot-traffic-backend.onrender.com';
 
   static String generateBarChartUrl({
     required String date,

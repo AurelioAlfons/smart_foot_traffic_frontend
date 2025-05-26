@@ -14,11 +14,11 @@ class TrafficLogic {
   // BASE URL SETUP:
 
   // LOCAL (use for development/testing)
-  // static const String baseUrl = 'http://localhost:5000';
+  static const String baseUrl = 'http://localhost:5000';
 
   // CLOUD (Render deployment)
-  static const String baseUrl =
-      'https://smart-foot-traffic-backend.onrender.com';
+  // static const String baseUrl =
+  //     'https://smart-foot-traffic-backend.onrender.com';
 
   /// Generate heatmap and return the full URL to the HTML
   static Future<String> generateHeatmap(
