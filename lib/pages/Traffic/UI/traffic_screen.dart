@@ -35,6 +35,7 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[900],
       body: LayoutBuilder(
         builder: (context, constraints) {
           //
@@ -150,6 +151,7 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
                                           icon: const Icon(Icons.chevron_left,
                                               color: Colors.white),
                                         ),
+                                        const SizedBox(width: 12),
                                         // Title
                                         Text(
                                           currentPage == 0
@@ -161,6 +163,7 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
                                             fontSize: 24,
                                           ),
                                         ),
+                                        const SizedBox(width: 12),
                                         // Right -> Go to Heatmap
                                         HoverableIconButton(
                                           onPressed: () {

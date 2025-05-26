@@ -1,9 +1,9 @@
 // ====================================================
-// Dashboard Panel
+// Dashboard Panel (Flat Style)
 // ----------------------------------------------------
-// - Displays chart cards (bar, pie, line, insights)
-// - Uses placeholders if data is loading or missing
-// - Supports dynamic chart rendering via URL
+// - Displays 4 chart sections in a 2x2 grid
+// - Flat container style (no curves/cards)
+// - Supports placeholder mode and dynamic rendering
 // ====================================================
 
 import 'package:flutter/material.dart';
@@ -25,41 +25,35 @@ class DashboardPanel extends StatelessWidget {
     this.isPlaceholder = false,
   });
 
-  Widget _buildChartBox(String? title, Widget child, {bool showTitle = true}) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: showTitle
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title ?? '',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Expanded(child: child),
-                ],
-              )
-            : child,
+  Widget _buildFlatBox(String? title, Widget child, {bool showTitle = true}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
       ),
+      padding: const EdgeInsets.all(12),
+      child: showTitle
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title ?? '',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Expanded(child: child),
+              ],
+            )
+          : child,
     );
   }
 
   Widget _buildPlaceholderBox(String title) {
-    return _buildChartBox(
+    return _buildFlatBox(
       title,
-      Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[800],
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
+      Container(color: Colors.white),
     );
   }
 
@@ -75,45 +69,33 @@ class DashboardPanel extends StatelessWidget {
         children: [
           // Box 1: Bar Chart
           (isPlaceholder || barChartUrl == null)
-              ? _buildChartBox('Bar Chart', _buildPlaceholder(),
-                  showTitle: true)
-              : _buildChartBox(null, BarChartCard(chartUrl: barChartUrl!),
+              ? _buildFlatBox('Bar Chart', _buildPlaceholder(), showTitle: true)
+              : _buildFlatBox(null, BarChartCard(chartUrl: barChartUrl!),
                   showTitle: false),
 
           // Box 2: Line Chart
           isPlaceholder
               ? _buildPlaceholderBox('Line Chart')
-              : _buildChartBox(
-                  'Line Chart (Coming Soon)',
-                  const Center(child: Text("Line chart placeholder")),
-                ),
+              : _buildFlatBox('Line Chart (Coming Soon)',
+                  const Center(child: Text("Line chart placeholder"))),
 
           // Box 3: Pie Chart
           isPlaceholder
               ? _buildPlaceholderBox('Pie Chart')
-              : _buildChartBox(
-                  'Pie Chart (Coming Soon)',
-                  const Center(child: Text("Pie chart placeholder")),
-                ),
+              : _buildFlatBox('Pie Chart (Coming Soon)',
+                  const Center(child: Text("Pie chart placeholder"))),
 
           // Box 4: Insights
           isPlaceholder
               ? _buildPlaceholderBox('Insights')
-              : _buildChartBox(
-                  'Insights / Stats',
-                  const Center(child: Text("Insights placeholder")),
-                ),
+              : _buildFlatBox('Insights / Stats',
+                  const Center(child: Text("Insights placeholder"))),
         ],
       ),
     );
   }
 
   Widget _buildPlaceholder() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[800],
-        borderRadius: BorderRadius.circular(8),
-      ),
-    );
+    return Container(color: Colors.white);
   }
 }
