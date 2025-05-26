@@ -1,12 +1,20 @@
 // ====================================================
-// Chart Logic Generator
+// Chart Logic Generator - Local/Cloud Toggle
 // ----------------------------------------------------
 // - Builds safe bar chart URL using date, time, and type
-// - Removes spaces/colons for valid filenames
-// - Placeholder for future pie/line chart logic
+// - Comment/uncomment the baseUrl line below to switch env
 // ====================================================
 
 class ChartLogic {
+  // BASE URL SETUP:
+
+  // ← LOCAL (for dev)
+  // static const String baseUrl = 'http://localhost:5000';
+
+  // ← CLOUD (Render)
+  static const String baseUrl =
+      'https://smart-foot-traffic-backend.onrender.com';
+
   static String generateBarChartUrl({
     required String date,
     required String time,
@@ -14,8 +22,8 @@ class ChartLogic {
   }) {
     final safeType = trafficType.replaceAll(' ', '');
     final safeTime = time.replaceAll(":", "-");
-    return 'http://localhost:5000/barchart/bar_${date}_${safeTime}_$safeType.html';
+    return '$baseUrl/barchart/bar_${date}_${safeTime}_$safeType.html';
   }
 
-  // Add pie chart and line chart logic here later
+  // Future: Add pie chart and line chart logic here
 }

@@ -1,6 +1,7 @@
 // ====================================================
-// Traffic Logic (API Calls)
+// Traffic Logic (API Calls) - Local/Cloud Toggle
 // ----------------------------------------------------
+// - Switch between localhost and cloud by commenting lines below
 // - Sends POST request to generate heatmap HTML
 // - Fetches snapshot data for all locations
 // - Fetches summary stats for charts (bar, pie, etc.)
@@ -10,7 +11,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class TrafficLogic {
-  static const String baseUrl = 'http://localhost:5000';
+  // BASE URL SETUP:
+
+  // LOCAL (use for development/testing)
+  // static const String baseUrl = 'http://localhost:5000';
+
+  // CLOUD (Render deployment)
+  static const String baseUrl =
+      'https://smart-foot-traffic-backend.onrender.com';
 
   /// Generate heatmap and return the full URL to the HTML
   static Future<String> generateHeatmap(
