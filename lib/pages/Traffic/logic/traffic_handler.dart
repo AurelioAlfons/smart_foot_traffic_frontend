@@ -91,11 +91,15 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     try {
       final formattedTime = time.contains(':00:00') ? time : '$time:00';
 
-      final url = await TrafficLogic.generateHeatmap(date, formattedTime, type);
-      final snapshotList =
-          await TrafficLogic.fetchSnapshot(date, formattedTime, type);
-      final summaryData =
-          await TrafficLogic.fetchSummaryStats(date, formattedTime, type);
+      final results = await Future.wait([
+        TrafficLogic.generateHeatmap(date, formattedTime, type),
+        TrafficLogic.fetchSnapshot(date, formattedTime, type),
+        TrafficLogic.fetchSummaryStats(date, formattedTime, type),
+      ]);
+
+      final url = results[0] as String;
+      final snapshotList = results[1] as List;
+      final summaryData = results[2] as Map<String, dynamic>;
 
       final barUrl = ChartLogic.generateBarChartUrl(
         date: date,
