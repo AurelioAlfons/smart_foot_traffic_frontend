@@ -123,7 +123,7 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
           const SizedBox(height: 12),
           Theme(
             data: Theme.of(context).copyWith(
-              tabBarTheme: TabBarTheme(
+              tabBarTheme: TabBarThemeData(
                 labelColor: Colors.yellow[700],
                 unselectedLabelColor: Colors.white70,
               ),

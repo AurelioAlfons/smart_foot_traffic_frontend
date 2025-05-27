@@ -137,6 +137,7 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 12),
                                     decoration: BoxDecoration(
+                                      // ignore: deprecated_member_use
                                       color: Colors.black.withOpacity(0.7),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
