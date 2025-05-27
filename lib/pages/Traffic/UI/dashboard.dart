@@ -42,37 +42,65 @@ class DashboardPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isLaptop = screenWidth < 1380;
+
     return Stack(
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
-          child: GridView.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: 1.5,
-            children: [
-              // Box 1: Bar Chart
-              _buildChartBox(
-                "Bar Chart",
-                (isPlaceholder || barChartUrl == null)
-                    ? null
-                    : BarChartCard(chartUrl: barChartUrl!),
-              ),
+          child: isLaptop
+              // Laptop: stacked full-width scrollable layout
+              ? ListView(
+                  children: [
+                    SizedBox(
+                      height: 550,
+                      child: _buildChartBox(
+                        "Bar Chart",
+                        (isPlaceholder || barChartUrl == null)
+                            ? null
+                            : BarChartCard(chartUrl: barChartUrl!),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 550,
+                      child: _buildChartBox("Line Chart", null),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 550,
+                      child: _buildChartBox("Pie Chart", null),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 550,
+                      child: _buildChartBox("Insights / Stats", null),
+                    ),
+                  ],
+                )
 
-              // Box 2: Line Chart
-              _buildChartBox("Line Chart", null),
-
-              // Box 3: Pie Chart
-              _buildChartBox("Pie Chart", null),
-
-              // Box 4: Insights
-              _buildChartBox("Insights / Stats", null),
-            ],
-          ),
+              // Monitor: 2x2 grid layout
+              : GridView.count(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 1.5,
+                  children: [
+                    _buildChartBox(
+                      "Bar Chart",
+                      (isPlaceholder || barChartUrl == null)
+                          ? null
+                          : BarChartCard(chartUrl: barChartUrl!),
+                    ),
+                    _buildChartBox("Line Chart", null),
+                    _buildChartBox("Pie Chart", null),
+                    _buildChartBox("Insights / Stats", null),
+                  ],
+                ),
         ),
 
-        // Yellow Progress Bar (bottom right)
+        // Progress Bar
         if (isLoading)
           Align(
             alignment: Alignment.topCenter,
@@ -84,7 +112,7 @@ class DashboardPanel extends StatelessWidget {
                 backgroundColor: Colors.black26,
               ),
             ),
-          )
+          ),
       ],
     );
   }
