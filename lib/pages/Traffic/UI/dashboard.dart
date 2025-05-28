@@ -39,9 +39,8 @@ class _DashboardPanelState extends State<DashboardPanel> {
             date: widget.date!, trafficType: widget.trafficType!)
         : null;
 
-    if (!widget.lineChartReady) {
-      lastLineChartUrl = null;
-    } else if (currentUrl != null) {
+    // Only update if new URL is ready
+    if (widget.lineChartReady && currentUrl != null) {
       lastLineChartUrl = currentUrl;
     }
   }
@@ -109,7 +108,7 @@ class _DashboardPanelState extends State<DashboardPanel> {
                       height: 550,
                       child: _buildChartBox(
                         "Line Chart",
-                        lineChartWidget == null ? null : lineChartWidget,
+                        lineChartWidget,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -138,7 +137,7 @@ class _DashboardPanelState extends State<DashboardPanel> {
                     ),
                     _buildChartBox(
                       "Line Chart",
-                      lineChartWidget == null ? null : lineChartWidget,
+                      lineChartWidget,
                     ),
                     _buildChartBox("Pie Chart", null),
                     _buildChartBox("Insights / Stats", null),
