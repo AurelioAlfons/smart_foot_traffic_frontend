@@ -39,7 +39,9 @@ class _DashboardPanelState extends State<DashboardPanel> {
             date: widget.date!, trafficType: widget.trafficType!)
         : null;
 
-    if (widget.lineChartReady && currentUrl != null) {
+    if (!widget.lineChartReady) {
+      lastLineChartUrl = null;
+    } else if (currentUrl != null) {
       lastLineChartUrl = currentUrl;
     }
   }
