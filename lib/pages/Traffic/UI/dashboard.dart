@@ -3,7 +3,7 @@ import 'package:smart_foot_traffic_frontend/components/tools/bar_chart/barchart_
 import 'package:smart_foot_traffic_frontend/components/tools/line_chart/linechart_card.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/chart_logic.dart';
 
-class DashboardPanel extends StatelessWidget {
+class DashboardPanel extends StatefulWidget {
   final String? date;
   final String? time;
   final String? trafficType;
@@ -22,6 +22,27 @@ class DashboardPanel extends StatelessWidget {
     this.isLoading = false,
     this.lineChartReady = false,
   });
+
+  @override
+  State<DashboardPanel> createState() => _DashboardPanelState();
+}
+
+class _DashboardPanelState extends State<DashboardPanel> {
+  String? lastLineChartUrl;
+
+  @override
+  void didUpdateWidget(covariant DashboardPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final currentUrl = (widget.date != null && widget.trafficType != null)
+        ? ChartLogic.generateLineChartUrl(
+            date: widget.date!, trafficType: widget.trafficType!)
+        : null;
+
+    if (widget.lineChartReady && currentUrl != null) {
+      lastLineChartUrl = currentUrl;
+    }
+  }
 
   Widget _buildChartBox(String title, Widget? child) {
     return Container(
@@ -44,20 +65,32 @@ class DashboardPanel extends StatelessWidget {
     );
   }
 
+  Widget _chartWithLoader(Widget? child) {
+    return Stack(
+      children: [
+        if (child != null) Positioned.fill(child: child),
+        if (widget.isLoading)
+          const Positioned.fill(
+            child: ColoredBox(
+              color: Colors.white70,
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: Colors.yellow,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isLaptop = screenWidth < 1380;
 
-    final lineChartUrl = (date != null && trafficType != null)
-        ? ChartLogic.generateLineChartUrl(
-            date: date!, trafficType: trafficType!)
-        : null;
-
     final lineChartWidget =
-        (isPlaceholder || lineChartUrl == null || !lineChartReady)
-            ? null
-            : LineChartCard(url: lineChartUrl);
+        lastLineChartUrl != null ? LineChartCard(url: lastLineChartUrl!) : null;
 
     return Stack(
       children: [
@@ -70,15 +103,22 @@ class DashboardPanel extends StatelessWidget {
                       height: 550,
                       child: _buildChartBox(
                         "Bar Chart",
-                        (isPlaceholder || barChartUrl == null)
+                        widget.barChartUrl == null
                             ? null
-                            : BarChartCard(chartUrl: barChartUrl!),
+                            : _chartWithLoader(
+                                BarChartCard(chartUrl: widget.barChartUrl!),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
                       height: 550,
-                      child: _buildChartBox("Line Chart", lineChartWidget),
+                      child: _buildChartBox(
+                        "Line Chart",
+                        lineChartWidget == null
+                            ? null
+                            : _chartWithLoader(lineChartWidget),
+                      ),
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
@@ -100,17 +140,24 @@ class DashboardPanel extends StatelessWidget {
                   children: [
                     _buildChartBox(
                       "Bar Chart",
-                      (isPlaceholder || barChartUrl == null)
+                      (widget.isPlaceholder || widget.barChartUrl == null)
                           ? null
-                          : BarChartCard(chartUrl: barChartUrl!),
+                          : _chartWithLoader(
+                              BarChartCard(chartUrl: widget.barChartUrl!),
+                            ),
                     ),
-                    _buildChartBox("Line Chart", lineChartWidget),
+                    _buildChartBox(
+                      "Line Chart",
+                      lineChartWidget == null
+                          ? null
+                          : _chartWithLoader(lineChartWidget),
+                    ),
                     _buildChartBox("Pie Chart", null),
                     _buildChartBox("Insights / Stats", null),
                   ],
                 ),
         ),
-        if (isLoading)
+        if (widget.isLoading)
           Align(
             alignment: Alignment.topCenter,
             child: SizedBox(

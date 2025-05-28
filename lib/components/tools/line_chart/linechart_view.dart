@@ -45,7 +45,7 @@ class _LineChartViewState extends State<LineChartView> {
         viewID = newViewID;
       });
 
-      // Add fallback again for updated URL
+      // Fallback timeout again
       Future.delayed(const Duration(seconds: 5), () {
         if (mounted && !_isLoaded) {
           print(
@@ -92,11 +92,13 @@ class _LineChartViewState extends State<LineChartView> {
           key: ValueKey(widget.url),
         ),
         if (!_isLoaded)
-          const Positioned.fill(
+          Positioned.fill(
             child: ColoredBox(
               color: Colors.white,
               child: Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  color: Colors.yellow[700],
+                ),
               ),
             ),
           ),

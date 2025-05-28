@@ -30,6 +30,14 @@ class _BarChartViewState extends State<BarChartView> {
     super.initState();
     viewID = widget.url.hashCode.toString();
     _registerIframe(widget.url, viewID);
+
+    // Fallback timeout in case iframe doesn't trigger onLoad
+    Future.delayed(const Duration(seconds: 5), () {
+      if (mounted && !_isLoaded) {
+        print("[BarChartView] Fallback: iframe didn't load in time.");
+        setState(() => _isLoaded = true);
+      }
+    });
   }
 
   @override
@@ -43,6 +51,14 @@ class _BarChartViewState extends State<BarChartView> {
       setState(() {
         _isLoaded = false;
         viewID = newViewID;
+      });
+
+      // Add fallback again for updated URL
+      Future.delayed(const Duration(seconds: 5), () {
+        if (mounted && !_isLoaded) {
+          print("[BarChartView] Fallback: updated iframe didn't load in time.");
+          setState(() => _isLoaded = true);
+        }
       });
     }
   }
@@ -58,6 +74,7 @@ class _BarChartViewState extends State<BarChartView> {
       ..allow = 'fullscreen'
       ..onLoad.listen((_) {
         html.window.dispatchEvent(html.Event('resize'));
+        print("[BarChartView] Iframe loaded successfully.");
         if (mounted) {
           setState(() => _isLoaded = true);
         }
@@ -71,7 +88,8 @@ class _BarChartViewState extends State<BarChartView> {
   Widget build(BuildContext context) {
     if (!kIsWeb) {
       return const Center(
-          child: Text('Bar chart is only supported on Flutter Web'));
+        child: Text('Bar chart is only supported on Flutter Web'),
+      );
     }
 
     return Stack(
@@ -81,11 +99,13 @@ class _BarChartViewState extends State<BarChartView> {
           key: ValueKey(widget.url),
         ),
         if (!_isLoaded)
-          const Positioned.fill(
+          Positioned.fill(
             child: ColoredBox(
               color: Colors.white,
               child: Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  color: Colors.yellow[700],
+                ),
               ),
             ),
           ),
