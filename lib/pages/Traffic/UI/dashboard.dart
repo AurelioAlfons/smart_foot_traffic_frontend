@@ -12,6 +12,9 @@ class DashboardPanel extends StatefulWidget {
   final bool isLoading;
   final bool lineChartReady;
 
+  // Callback to reset line chart from parent
+  final VoidCallback? onResetLineChart;
+
   const DashboardPanel({
     super.key,
     this.date,
@@ -21,13 +24,14 @@ class DashboardPanel extends StatefulWidget {
     this.isPlaceholder = false,
     this.isLoading = false,
     this.lineChartReady = false,
+    this.onResetLineChart,
   });
 
   @override
-  State<DashboardPanel> createState() => _DashboardPanelState();
+  State<DashboardPanel> createState() => DashboardPanelState();
 }
 
-class _DashboardPanelState extends State<DashboardPanel> {
+class DashboardPanelState extends State<DashboardPanel> {
   String? lastLineChartUrl;
 
   @override
@@ -39,10 +43,18 @@ class _DashboardPanelState extends State<DashboardPanel> {
             date: widget.date!, trafficType: widget.trafficType!)
         : null;
 
-    // Only update if new URL is ready
     if (widget.lineChartReady && currentUrl != null) {
-      lastLineChartUrl = currentUrl;
+      setState(() {
+        lastLineChartUrl = currentUrl;
+      });
     }
+  }
+
+  // Public method to reset from parent (if using GlobalKey)
+  void resetLineChart() {
+    setState(() {
+      lastLineChartUrl = null;
+    });
   }
 
   Widget _buildChartBox(String title, Widget? child) {
@@ -108,7 +120,21 @@ class _DashboardPanelState extends State<DashboardPanel> {
                       height: 550,
                       child: _buildChartBox(
                         "Line Chart",
-                        lineChartWidget,
+                        Stack(
+                          children: [
+                            if (lineChartWidget != null) lineChartWidget,
+                            if (widget.isLoading)
+                              const Positioned.fill(
+                                child: ColoredBox(
+                                  color: Colors.white70,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                        color: Colors.yellow),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: 12),

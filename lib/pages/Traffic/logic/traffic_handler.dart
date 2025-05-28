@@ -13,7 +13,9 @@ import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/chart_logic.dart
 import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/traffic_logic.dart';
 
 mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
-  // UI state
+  // ==============================
+  // UI State Variables
+  // ==============================
   String? selectedType;
   String? selectedDate;
   String? selectedTime;
@@ -28,9 +30,18 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
   Map<String, dynamic> locationSnapshot = {};
   Map<String, dynamic>? barChartData;
 
+  /// Optional: Call this from parent widget to reset line chart URL, e.g., `lastLineChartUrl = null`
+  VoidCallback? onResetLineChart;
+
+  // ==============================
+  // Helper Getters
+  // ==============================
   bool get hasRequiredFilters =>
       selectedType != null && selectedDate != null && selectedTime != null;
 
+  // ==============================
+  // Reset All State
+  // ==============================
   void handleReset() {
     setState(() {
       generatedUrl = null;
@@ -44,11 +55,16 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
       barChartData = null;
       lineChartReady = false;
     });
+
+    // Reset line chart URL in parent if provided
+    onResetLineChart?.call();
   }
 
+  // ==============================
+  // Filter Handlers
+  // ==============================
   void handleTrafficTypeChange(String? type) {
     setState(() => selectedType = type);
-
     if (generatedUrl != null && hasRequiredFilters) {
       handleGenerate(
         type: type!,
@@ -62,7 +78,6 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
 
   void handleTimeChange(String? time) {
     setState(() => selectedTime = time);
-
     if (generatedUrl != null && hasRequiredFilters) {
       handleGenerate(
         type: selectedType!,
@@ -74,6 +89,9 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     }
   }
 
+  // ==============================
+  // Main Generate Handler
+  // ==============================
   Future<void> handleGenerate({
     required String type,
     required String date,
@@ -95,10 +113,11 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     try {
       final formattedTime = time.contains(':00:00') ? time : '$time:00';
 
-      // Generate line chart before proceeding
+      // Step 1: Generate Line Chart
       await TrafficLogic.generateLineChart(date, type);
       lineChartReady = true;
 
+      // Step 2: Run parallel async tasks
       final results = await Future.wait([
         TrafficLogic.generateHeatmap(date, formattedTime, type),
         TrafficLogic.fetchSnapshot(date, formattedTime, type),
@@ -119,6 +138,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
         for (var item in snapshotList) item['location']: item,
       };
 
+      // Step 3: Ping heatmap to make sure it’s ready
       final isReady = await _pingHeatmap(url);
 
       if (isReady) {
@@ -138,6 +158,9 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     setState(() => isLoading = false);
   }
 
+  // ==============================
+  // Ping Heatmap URL
+  // ==============================
   Future<bool> _pingHeatmap(String url) async {
     try {
       final response =
