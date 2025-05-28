@@ -108,6 +108,7 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
                                       barChartUrl: barChartUrl,
                                       isPlaceholder: false,
                                       isLoading: isLoading,
+                                      lineChartReady: lineChartReady,
                                     )
                                   : const DashboardPanel(isPlaceholder: true),
                             ],

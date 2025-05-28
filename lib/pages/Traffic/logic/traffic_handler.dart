@@ -7,7 +7,6 @@
 // ====================================================
 
 // ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/chart_logic.dart';
@@ -24,6 +23,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
   String? generatedUrl;
   String? barChartUrl;
   bool isLoading = false;
+  bool lineChartReady = false;
 
   Map<String, dynamic> locationSnapshot = {};
   Map<String, dynamic>? barChartData;
@@ -41,6 +41,8 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
       selectedYear = null;
       selectedSeason = null;
       locationSnapshot = {};
+      barChartData = null;
+      lineChartReady = false;
     });
   }
 
@@ -82,6 +84,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     print('Generating heatmap and charts...');
     setState(() {
       isLoading = true;
+      lineChartReady = false;
       selectedType = type;
       selectedDate = date;
       selectedTime = time;
@@ -91,6 +94,10 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
 
     try {
       final formattedTime = time.contains(':00:00') ? time : '$time:00';
+
+      // Generate line chart before proceeding
+      await TrafficLogic.generateLineChart(date, type);
+      lineChartReady = true;
 
       final results = await Future.wait([
         TrafficLogic.generateHeatmap(date, formattedTime, type),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_foot_traffic_frontend/components/tools/bar_chart/barchart_card.dart';
+import 'package:smart_foot_traffic_frontend/components/tools/line_chart/linechart_card.dart';
+import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/chart_logic.dart';
 
 class DashboardPanel extends StatelessWidget {
   final String? date;
@@ -8,6 +10,7 @@ class DashboardPanel extends StatelessWidget {
   final String? barChartUrl;
   final bool isPlaceholder;
   final bool isLoading;
+  final bool lineChartReady;
 
   const DashboardPanel({
     super.key,
@@ -17,6 +20,7 @@ class DashboardPanel extends StatelessWidget {
     this.barChartUrl,
     this.isPlaceholder = false,
     this.isLoading = false,
+    this.lineChartReady = false,
   });
 
   Widget _buildChartBox(String title, Widget? child) {
@@ -45,12 +49,21 @@ class DashboardPanel extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isLaptop = screenWidth < 1380;
 
+    final lineChartUrl = (date != null && trafficType != null)
+        ? ChartLogic.generateLineChartUrl(
+            date: date!, trafficType: trafficType!)
+        : null;
+
+    final lineChartWidget =
+        (isPlaceholder || lineChartUrl == null || !lineChartReady)
+            ? null
+            : LineChartCard(url: lineChartUrl);
+
     return Stack(
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
           child: isLaptop
-              // Laptop: stacked full-width scrollable layout
               ? ListView(
                   children: [
                     SizedBox(
@@ -65,7 +78,7 @@ class DashboardPanel extends StatelessWidget {
                     const SizedBox(height: 12),
                     SizedBox(
                       height: 550,
-                      child: _buildChartBox("Line Chart", null),
+                      child: _buildChartBox("Line Chart", lineChartWidget),
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
@@ -79,8 +92,6 @@ class DashboardPanel extends StatelessWidget {
                     ),
                   ],
                 )
-
-              // Monitor: 2x2 grid layout
               : GridView.count(
                   crossAxisCount: 2,
                   mainAxisSpacing: 12,
@@ -93,14 +104,12 @@ class DashboardPanel extends StatelessWidget {
                           ? null
                           : BarChartCard(chartUrl: barChartUrl!),
                     ),
-                    _buildChartBox("Line Chart", null),
+                    _buildChartBox("Line Chart", lineChartWidget),
                     _buildChartBox("Pie Chart", null),
                     _buildChartBox("Insights / Stats", null),
                   ],
                 ),
         ),
-
-        // Progress Bar
         if (isLoading)
           Align(
             alignment: Alignment.topCenter,

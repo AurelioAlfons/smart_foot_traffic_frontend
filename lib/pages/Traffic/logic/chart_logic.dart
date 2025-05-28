@@ -25,5 +25,11 @@ class ChartLogic {
     return '$baseUrl/barchart/bar_${date}_${safeTime}_$safeType.html';
   }
 
-  // Future: Add pie chart and line chart logic here
+  static String generateLineChartUrl({
+    required String date,
+    required String trafficType,
+  }) {
+    final safeType = trafficType.replaceAll(' ', '');
+    return '$baseUrl/linecharts/line_${date}_$safeType.html';
+  }
 }
