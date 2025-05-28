@@ -50,39 +50,33 @@ class _DashboardPanelState extends State<DashboardPanel> {
     return Container(
       padding: const EdgeInsets.all(12),
       color: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              if (child != null) Expanded(child: child),
+            ],
           ),
-          const SizedBox(height: 12),
-          if (child != null) Expanded(child: child),
-        ],
-      ),
-    );
-  }
-
-  Widget _chartWithLoader(Widget? child) {
-    return Stack(
-      children: [
-        if (child != null) Positioned.fill(child: child),
-        if (widget.isLoading)
-          const Positioned.fill(
-            child: ColoredBox(
-              color: Colors.white70,
-              child: Center(
-                child: CircularProgressIndicator(
-                  color: Colors.yellow,
+          if (widget.isLoading)
+            const Positioned.fill(
+              child: ColoredBox(
+                color: Colors.white70,
+                child: Center(
+                  child: CircularProgressIndicator(color: Colors.yellow),
                 ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -107,9 +101,7 @@ class _DashboardPanelState extends State<DashboardPanel> {
                         "Bar Chart",
                         widget.barChartUrl == null
                             ? null
-                            : _chartWithLoader(
-                                BarChartCard(chartUrl: widget.barChartUrl!),
-                              ),
+                            : BarChartCard(chartUrl: widget.barChartUrl!),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -117,9 +109,7 @@ class _DashboardPanelState extends State<DashboardPanel> {
                       height: 550,
                       child: _buildChartBox(
                         "Line Chart",
-                        lineChartWidget == null
-                            ? null
-                            : _chartWithLoader(lineChartWidget),
+                        lineChartWidget == null ? null : lineChartWidget,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -144,15 +134,11 @@ class _DashboardPanelState extends State<DashboardPanel> {
                       "Bar Chart",
                       (widget.isPlaceholder || widget.barChartUrl == null)
                           ? null
-                          : _chartWithLoader(
-                              BarChartCard(chartUrl: widget.barChartUrl!),
-                            ),
+                          : BarChartCard(chartUrl: widget.barChartUrl!),
                     ),
                     _buildChartBox(
                       "Line Chart",
-                      lineChartWidget == null
-                          ? null
-                          : _chartWithLoader(lineChartWidget),
+                      lineChartWidget == null ? null : lineChartWidget,
                     ),
                     _buildChartBox("Pie Chart", null),
                     _buildChartBox("Insights / Stats", null),
