@@ -33,8 +33,8 @@ Future<void> preloadHeatmap({
   );
 
   if (response.statusCode == 202) {
-    print("✅ Preload started successfully");
+    print("Preload started successfully");
   } else {
-    print("⚠️ Preload failed: ${response.body}");
+    print("Preload failed: ${response.body}");
   }
 }
