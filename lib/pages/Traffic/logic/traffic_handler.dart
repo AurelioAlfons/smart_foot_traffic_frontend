@@ -24,13 +24,13 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
 
   String? generatedUrl;
   String? barChartUrl;
+  String? pieChartUrl;
   bool isLoading = false;
   bool lineChartReady = false;
 
   Map<String, dynamic> locationSnapshot = {};
   Map<String, dynamic>? barChartData;
 
-  /// Optional: Call this from parent widget to reset line chart URL, e.g., `lastLineChartUrl = null`
   VoidCallback? onResetLineChart;
 
   // ==============================
@@ -46,6 +46,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     setState(() {
       generatedUrl = null;
       barChartUrl = null;
+      pieChartUrl = null;
       selectedType = null;
       selectedDate = null;
       selectedTime = null;
@@ -56,7 +57,6 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
       lineChartReady = false;
     });
 
-    // Reset line chart URL in parent if provided
     onResetLineChart?.call();
   }
 
@@ -113,43 +113,48 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     try {
       final formattedTime = time.contains(':00:00') ? time : '$time:00';
 
-      // Step 1: Generate Line Chart
-      await TrafficLogic.generateLineChart(date, type);
-      lineChartReady = true;
-
-      // Step 2: Run parallel async tasks
-      final results = await Future.wait([
-        TrafficLogic.generateHeatmap(date, formattedTime, type),
-        TrafficLogic.fetchSnapshot(date, formattedTime, type),
-        TrafficLogic.fetchSummaryStats(date, formattedTime, type),
-      ]);
-
-      final url = results[0] as String;
-      final snapshotList = results[1] as List;
-      final summaryData = results[2] as Map<String, dynamic>;
-
       final barUrl = ChartLogic.generateBarChartUrl(
         date: date,
         time: formattedTime,
         trafficType: type,
       );
+      final pieUrl = ChartLogic.generatePieChartUrl(date: date);
+
+      // Step 1: Run all async tasks in parallel
+      final results = await Future.wait([
+        TrafficLogic.generateLineChart(date, type), // [0]
+        TrafficLogic.generateHeatmap(date, formattedTime, type), // [1]
+        TrafficLogic.fetchSnapshot(date, formattedTime, type), // [2]
+        TrafficLogic.fetchSummaryStats(date, formattedTime, type), // [3]
+        TrafficLogic.generatePieChart(date), // [4]
+      ]);
+
+      final heatmapUrl = results[1] as String;
+      final snapshotList = results[2] as List;
+      final summaryData = results[3] as Map<String, dynamic>;
 
       final snapshotMap = {
         for (var item in snapshotList) item['location']: item,
       };
 
-      // Step 3: Ping heatmap to make sure it’s ready
-      final isReady = await _pingHeatmap(url);
+      // Step 2: Confirm heatmap + pie are ready
+      final heatmapReady = await _pingUrl(heatmapUrl);
+      final pieReady = await _pingUrl(pieUrl);
 
-      if (isReady) {
+      if (heatmapReady) {
         setState(() {
-          generatedUrl = "$url?t=${DateTime.now().millisecondsSinceEpoch}";
+          generatedUrl =
+              "$heatmapUrl?t=${DateTime.now().millisecondsSinceEpoch}";
           locationSnapshot = Map<String, dynamic>.from(snapshotMap);
           barChartData = summaryData['bar_chart'].cast<String, dynamic>();
           barChartUrl = barUrl;
+          pieChartUrl = pieReady
+              ? "$pieUrl?t=${DateTime.now().millisecondsSinceEpoch}"
+              : null;
+          lineChartReady = true;
         });
       } else {
-        print("Heatmap HTML not ready yet.");
+        print("[Heatmap] HTML not ready.");
       }
     } catch (e) {
       print('Error in handleGenerate: $e');
@@ -159,9 +164,9 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
   }
 
   // ==============================
-  // Ping Heatmap URL
+  // Ping URL (for both heatmap and pie)
   // ==============================
-  Future<bool> _pingHeatmap(String url) async {
+  Future<bool> _pingUrl(String url) async {
     try {
       final response =
           await http.head(Uri.parse(url)).timeout(const Duration(seconds: 2));

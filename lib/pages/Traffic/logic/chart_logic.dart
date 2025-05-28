@@ -32,4 +32,10 @@ class ChartLogic {
     final safeType = trafficType.replaceAll(' ', '');
     return '$baseUrl/linecharts/line_${date}_$safeType.html';
   }
+
+  static String generatePieChartUrl({
+    required String date,
+  }) {
+    return '$baseUrl/piecharts/pie_dashboard_$date.html';
+  }
 }

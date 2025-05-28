@@ -99,4 +99,22 @@ class TrafficLogic {
       print('[LineChart] Generation failed: ${response.body}');
     }
   }
+
+  /// Generate pie chart HTML for a given date
+  static Future<void> generatePieChart(String date) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/generate_piechart'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'date': date,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      print('[PieChart] Generated successfully: ${result['url']}');
+    } else {
+      print('[PieChart] Generation failed: ${response.body}');
+    }
+  }
 }
