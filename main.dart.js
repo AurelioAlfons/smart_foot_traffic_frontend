@@ -80904,7 +80904,7 @@ A.N1.prototype={
 G(a){return new A.zz(new A.xX(new A.ae7(this),null),B.eS,null)}}
 A.ae7.prototype={
 $2(a,b){var s,r,q,p,o=null,n=b.b,m=this.a,l=new A.AX(new A.ae0(),m.gahh(),m.gahF(),m.lA$,m.lB$,m.lC$,m.gai3(),m.gai1(),new A.ae1(m),m.Fk$,m.r,new A.ae2(m),o),k=m.t2$
-if(k==null)k="http://localhost:5000/heatmaps/default_map.html"
+if(k==null)k="https://smart-foot-traffic-backend.onrender.com/heatmaps/default_map.html"
 s=t.p
 k=A.b([new A.IC(k,o)],s)
 if(m.xL$)k.push(new A.el(B.eE,o,o,A.d5(A.avQ(B.l8,B.b6),14,1/0),o))
