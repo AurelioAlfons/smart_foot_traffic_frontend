@@ -25072,7 +25072,7 @@ if(a.charCodeAt(s)!==47)return q
 return b+3},
 adS(a,b,c){var s=0,r=A.U(t.N),q,p,o,n,m
 var $async$adS=A.Q(function(d,e){if(d===1)return A.R(e,r)
-while(true)switch(s){case 0:p=A.ej("http://localhost:5000/api/generate_heatmap")
+while(true)switch(s){case 0:p=A.ej("https://smart-foot-traffic-backend.onrender.com/api/generate_heatmap")
 o=t.N
 n=A.av(["Content-Type","application/json"],o,o)
 s=3
@@ -25086,7 +25086,7 @@ case 1:return A.S(q,r)}})
 return A.T($async$adS,r)},
 adQ(a,b,c){var s=0,r=A.U(t.j),q,p,o,n,m
 var $async$adQ=A.Q(function(d,e){if(d===1)return A.R(e,r)
-while(true)switch(s){case 0:p=A.ej("http://localhost:5000/api/location_snapshot")
+while(true)switch(s){case 0:p=A.ej("https://smart-foot-traffic-backend.onrender.com/api/location_snapshot")
 o=t.N
 n=A.av(["Content-Type","application/json"],o,o)
 s=3
@@ -25100,7 +25100,7 @@ case 1:return A.S(q,r)}})
 return A.T($async$adQ,r)},
 adR(a,b,c){var s=0,r=A.U(t.a),q,p,o,n,m
 var $async$adR=A.Q(function(d,e){if(d===1)return A.R(e,r)
-while(true)switch(s){case 0:p=A.ej("http://localhost:5000/api/summary_stats")
+while(true)switch(s){case 0:p=A.ej("https://smart-foot-traffic-backend.onrender.com/api/summary_stats")
 o=t.N
 n=A.av(["Content-Type","application/json"],o,o)
 s=3
@@ -25114,7 +25114,7 @@ case 1:return A.S(q,r)}})
 return A.T($async$adR,r)},
 adT(a,b){var s=0,r=A.U(t.H),q,p,o,n
 var $async$adT=A.Q(function(c,d){if(c===1)return A.R(d,r)
-while(true)switch(s){case 0:q=A.ej("http://localhost:5000/api/generate_linechart")
+while(true)switch(s){case 0:q=A.ej("https://smart-foot-traffic-backend.onrender.com/api/generate_linechart")
 p=t.N
 o=A.av(["Content-Type","application/json"],p,p)
 s=2
@@ -25129,7 +25129,7 @@ return A.S(null,r)}})
 return A.T($async$adT,r)},
 adU(a){var s=0,r=A.U(t.H),q,p,o,n
 var $async$adU=A.Q(function(b,c){if(b===1)return A.R(c,r)
-while(true)switch(s){case 0:q=A.ej("http://localhost:5000/api/generate_piechart")
+while(true)switch(s){case 0:q=A.ej("https://smart-foot-traffic-backend.onrender.com/api/generate_piechart")
 p=t.N
 o=A.av(["Content-Type","application/json"],p,p)
 s=2
@@ -80870,7 +80870,7 @@ r=s.c
 if(r!=null&&s.e!=null){r.toString
 s=s.e
 s.toString
-q="http://localhost:5000/linecharts/line_"+r+"_"+A.j1(s," ","")+".html"}else q=null
+q="https://smart-foot-traffic-backend.onrender.com/linecharts/line_"+r+"_"+A.j1(s," ","")+".html"}else q=null
 if(p.a.y&&q!=null)p.Z(new A.ZH(p,q))},
 l_(a,b){var s=null,r=t.p,q=A.b([A.dH(a,s,s,s,s,B.Q8,s,s),B.aX],r)
 if(b!=null)q.push(A.jf(b,1))
@@ -81057,8 +81057,8 @@ o.Z(new A.adK(o,a6,a3,a5,a7,a4))
 q=3
 n=B.d.p(a5,":00:00")?a5:a5+":00"
 a=A.j1(a6," ","")
-m="http://localhost:5000/barchart/bar_"+a3+"_"+A.j1(n,":","-")+"_"+a+".html"
-l="http://localhost:5000/piecharts/pie_dashboard_"+a3+".html"
+m="https://smart-foot-traffic-backend.onrender.com/barchart/bar_"+a3+"_"+A.j1(n,":","-")+"_"+a+".html"
+l="https://smart-foot-traffic-backend.onrender.com/piecharts/pie_dashboard_"+a3+".html"
 s=6
 return A.Y(A.od(A.b([A.adT(a3,a6),A.adS(a3,n,a6),A.adQ(a3,n,a6),A.adR(a3,n,a6),A.adU(a3)],t.mo),t.H),$async$lH)
 case 6:k=a9
