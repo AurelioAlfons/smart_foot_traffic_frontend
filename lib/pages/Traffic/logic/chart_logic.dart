@@ -38,4 +38,11 @@ class ChartLogic {
   }) {
     return '$baseUrl/piecharts/pie_dashboard_$date.html';
   }
+
+  static String generateWeatherChartUrl({
+    required String trafficType,
+  }) {
+    final safeType = trafficType.replaceAll(' ', '');
+    return '$baseUrl/weather_chart/weather_bar_$safeType.html';
+  }
 }

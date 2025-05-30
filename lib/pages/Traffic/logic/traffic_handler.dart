@@ -13,9 +13,7 @@ import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/chart_logic.dart
 import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/traffic_logic.dart';
 
 mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
-  // ==============================
   // UI State Variables
-  // ==============================
   String? selectedType;
   String? selectedDate;
   String? selectedTime;
@@ -25,6 +23,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
   String? generatedUrl;
   String? barChartUrl;
   String? pieChartUrl;
+  String? weatherChartUrl;
   bool isLoading = false;
   bool lineChartReady = false;
 
@@ -33,20 +32,17 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
 
   VoidCallback? onResetLineChart;
 
-  // ==============================
   // Helper Getters
-  // ==============================
   bool get hasRequiredFilters =>
       selectedType != null && selectedDate != null && selectedTime != null;
 
-  // ==============================
   // Reset All State
-  // ==============================
   void handleReset() {
     setState(() {
       generatedUrl = null;
       barChartUrl = null;
       pieChartUrl = null;
+      weatherChartUrl = null;
       selectedType = null;
       selectedDate = null;
       selectedTime = null;
@@ -60,9 +56,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     onResetLineChart?.call();
   }
 
-  // ==============================
   // Filter Handlers
-  // ==============================
   void handleTrafficTypeChange(String? type) {
     setState(() => selectedType = type);
     if (generatedUrl != null && hasRequiredFilters) {
@@ -89,9 +83,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     }
   }
 
-  // ==============================
   // Main Generate Handler
-  // ==============================
   Future<void> handleGenerate({
     required String type,
     required String date,
@@ -119,14 +111,15 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
         trafficType: type,
       );
       final pieUrl = ChartLogic.generatePieChartUrl(date: date);
+      final weatherUrl = ChartLogic.generateWeatherChartUrl(trafficType: type);
 
-      // Step 1: Run all async tasks in parallel
       final results = await Future.wait([
-        TrafficLogic.generateLineChart(date, type), // [0]
-        TrafficLogic.generateHeatmap(date, formattedTime, type), // [1]
-        TrafficLogic.fetchSnapshot(date, formattedTime, type), // [2]
-        TrafficLogic.fetchSummaryStats(date, formattedTime, type), // [3]
-        TrafficLogic.generatePieChart(date), // [4]
+        TrafficLogic.generateLineChart(date, type),
+        TrafficLogic.generateHeatmap(date, formattedTime, type),
+        TrafficLogic.fetchSnapshot(date, formattedTime, type),
+        TrafficLogic.fetchSummaryStats(date, formattedTime, type),
+        TrafficLogic.generatePieChart(date),
+        TrafficLogic.generateWeatherChart(type),
       ]);
 
       final heatmapUrl = results[1] as String;
@@ -137,9 +130,9 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
         for (var item in snapshotList) item['location']: item,
       };
 
-      // Step 2: Confirm heatmap + pie are ready
       final heatmapReady = await _pingUrl(heatmapUrl);
       final pieReady = await _pingUrl(pieUrl);
+      final weatherReady = await _pingUrl(weatherUrl);
 
       if (heatmapReady) {
         setState(() {
@@ -150,6 +143,9 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
           barChartUrl = barUrl;
           pieChartUrl = pieReady
               ? "$pieUrl?t=${DateTime.now().millisecondsSinceEpoch}"
+              : null;
+          weatherChartUrl = weatherReady
+              ? "$weatherUrl?t=${DateTime.now().millisecondsSinceEpoch}"
               : null;
           lineChartReady = true;
         });
@@ -163,9 +159,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     setState(() => isLoading = false);
   }
 
-  // ==============================
-  // Ping URL (for both heatmap and pie)
-  // ==============================
+  // Ping URL to check if file is ready
   Future<bool> _pingUrl(String url) async {
     try {
       final response =

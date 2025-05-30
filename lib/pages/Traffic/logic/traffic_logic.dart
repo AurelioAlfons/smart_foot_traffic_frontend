@@ -117,4 +117,22 @@ class TrafficLogic {
       print('[PieChart] Generation failed: ${response.body}');
     }
   }
+
+  /// Generate weather chart HTML for selected traffic type
+  static Future<void> generateWeatherChart(String trafficType) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/generate_weather_chart'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'traffic_type': trafficType,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      print('[WeatherChart] Generated or exists: ${result['url']}');
+    } else {
+      print('[WeatherChart] Generation failed: ${response.body}');
+    }
+  }
 }

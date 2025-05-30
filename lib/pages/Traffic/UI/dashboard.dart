@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_foot_traffic_frontend/components/tools/bar_chart/barchart_card.dart';
 import 'package:smart_foot_traffic_frontend/components/tools/line_chart/linechart_card.dart';
 import 'package:smart_foot_traffic_frontend/components/tools/pie_chart/piechart_card.dart';
+import 'package:smart_foot_traffic_frontend/components/tools/weather_chart/weather_card.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/chart_logic.dart';
 
 class DashboardPanel extends StatefulWidget {
@@ -18,6 +19,7 @@ class DashboardPanel extends StatefulWidget {
   final String? trafficType;
   final String? barChartUrl;
   final String? pieChartUrl;
+  final String? weatherChartUrl;
   final bool isPlaceholder;
   final bool isLoading;
   final bool lineChartReady;
@@ -31,6 +33,7 @@ class DashboardPanel extends StatefulWidget {
     this.trafficType,
     this.barChartUrl,
     this.pieChartUrl,
+    this.weatherChartUrl,
     this.isPlaceholder = false,
     this.isLoading = false,
     this.lineChartReady = false,
@@ -112,6 +115,10 @@ class DashboardPanelState extends State<DashboardPanel> {
         ? PieChartCard(url: widget.pieChartUrl!)
         : null;
 
+    final weatherChartWidget = widget.weatherChartUrl != null
+        ? WeatherChartCard(url: widget.weatherChartUrl!)
+        : null;
+
     return Stack(
       children: [
         Padding(
@@ -158,6 +165,12 @@ class DashboardPanelState extends State<DashboardPanel> {
                     const SizedBox(height: 12),
                     SizedBox(
                       height: 550,
+                      child:
+                          _buildChartBox("Weather Chart", weatherChartWidget),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 550,
                       child: _buildChartBox("Insights / Stats", null),
                     ),
                   ],
@@ -179,6 +192,7 @@ class DashboardPanelState extends State<DashboardPanel> {
                       lineChartWidget,
                     ),
                     _buildChartBox("Pie Chart", pieChartWidget),
+                    _buildChartBox("Weather Chart", weatherChartWidget),
                     _buildChartBox("Insights / Stats", null),
                   ],
                 ),
