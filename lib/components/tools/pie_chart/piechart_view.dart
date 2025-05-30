@@ -1,8 +1,19 @@
+// ====================================================
+// Pie Chart View (Web Only)
+// ----------------------------------------------------
+// - Embeds HTML iframe to show pie chart URL
+// - Registers a unique view ID for each chart
+// - Shows loader until iframe finishes loading
+// ====================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:ui' as ui;
-// ignore: avoid_web_libraries_in_flutter
+
+// ignore: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
+
+// ✅ Correct import for web-only platformViewRegistry
+import 'dart:ui_web' as ui; // ✅
 
 class PieChartView extends StatefulWidget {
   final String url;

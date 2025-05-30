@@ -8,9 +8,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:ui' as ui;
-// ignore: avoid_web_libraries_in_flutter
+
+// ✅ Use web-specific libraries for iframe
+// ignore: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
+import 'dart:ui_web' as ui; // ✅ Updated from 'dart:ui' to 'dart:ui_web'
 
 class BarChartView extends StatefulWidget {
   final String url;
@@ -29,42 +31,26 @@ class _BarChartViewState extends State<BarChartView> {
   void initState() {
     super.initState();
     viewID = widget.url.hashCode.toString();
-    _registerIframe(widget.url, viewID);
-
-    // Fallback timeout in case iframe doesn't trigger onLoad
-    Future.delayed(const Duration(seconds: 5), () {
-      if (mounted && !_isLoaded) {
-        print("[BarChartView] Fallback: iframe didn't load in time.");
-        setState(() => _isLoaded = true);
-      }
-    });
+    _registerIframe(widget.url, viewID); // ✅
   }
 
   @override
   void didUpdateWidget(covariant BarChartView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.url != widget.url && kIsWeb) {
+    if (oldWidget.url != widget.url && kIsWeb) { // ✅
       final newViewID = widget.url.hashCode.toString();
-      _registerIframe(widget.url, newViewID);
+      _registerIframe(widget.url, newViewID); // ✅
 
       setState(() {
         _isLoaded = false;
         viewID = newViewID;
       });
-
-      // Add fallback again for updated URL
-      Future.delayed(const Duration(seconds: 5), () {
-        if (mounted && !_isLoaded) {
-          print("[BarChartView] Fallback: updated iframe didn't load in time.");
-          setState(() => _isLoaded = true);
-        }
-      });
     }
   }
 
   void _registerIframe(String url, String id) {
-    if (!kIsWeb) return;
+    if (!kIsWeb) return; // ✅ only for web
 
     final iframe = html.IFrameElement()
       ..src = url
@@ -74,14 +60,13 @@ class _BarChartViewState extends State<BarChartView> {
       ..allow = 'fullscreen'
       ..onLoad.listen((_) {
         html.window.dispatchEvent(html.Event('resize'));
-        print("[BarChartView] Iframe loaded successfully.");
         if (mounted) {
-          setState(() => _isLoaded = true);
+          setState(() => _isLoaded = true); // ✅ loader toggle
         }
       });
 
-    // ignore: undefined_prefixed_name
-    ui.platformViewRegistry.registerViewFactory(id, (int viewId) => iframe);
+    // ✅ register the iframe element to be rendered in Flutter web
+    ui.platformViewRegistry.registerViewFactory(id, (int viewId) => iframe); // ✅
   }
 
   @override
@@ -99,13 +84,11 @@ class _BarChartViewState extends State<BarChartView> {
           key: ValueKey(widget.url),
         ),
         if (!_isLoaded)
-          Positioned.fill(
+          const Positioned.fill(
             child: ColoredBox(
               color: Colors.white,
               child: Center(
-                child: CircularProgressIndicator(
-                  color: Colors.yellow[700],
-                ),
+                child: CircularProgressIndicator(),
               ),
             ),
           ),

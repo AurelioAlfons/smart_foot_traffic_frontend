@@ -6,10 +6,14 @@
 // - Displays loading bar if isLoading is true
 // ====================================================
 
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
-import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+
+// ignore: avoid_web_libraries_in_flutter, deprecated_member_use
+import 'dart:html' as html;
+
+// ✅ Correct import for web-only platformViewRegistry
+import 'dart:ui_web' as ui; // ✅
 
 class HeatmapView extends StatelessWidget {
   final String heatmapUrl;
@@ -26,16 +30,17 @@ class HeatmapView extends StatelessWidget {
     final viewType = 'heatmap-${heatmapUrl.hashCode}';
     print("📡 iframe loading: $heatmapUrl");
 
-    // ignore: undefined_prefixed_name
-    ui.platformViewRegistry.registerViewFactory(
-      viewType,
-      (int viewId) => html.IFrameElement()
-        ..src = heatmapUrl
-        ..style.border = 'none'
-        ..style.width = '100%'
-        ..style.height = '100%'
-        ..allowFullscreen = true,
-    );
+    if (kIsWeb) {
+      ui.platformViewRegistry.registerViewFactory(
+        viewType,
+        (int viewId) => html.IFrameElement()
+          ..src = heatmapUrl
+          ..style.border = 'none'
+          ..style.width = '100%'
+          ..style.height = '100%'
+          ..allowFullscreen = true,
+      );
+    }
 
     return Stack(
       children: [
@@ -55,3 +60,6 @@ class HeatmapView extends StatelessWidget {
     );
   }
 }
+
+//git config --global user.name "Adham Soliman"
+//git config --global user.email "adham.jsg@gmail.com"

@@ -1,8 +1,19 @@
+// ====================================================
+// Weather Chart View (Web Only)
+// ----------------------------------------------------
+// - Embeds weather chart in an iframe
+// - Registers a unique view ID using the chart URL
+// - Shows loading indicator until iframe loads
+// ====================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:ui' as ui;
-// ignore: avoid_web_libraries_in_flutter
+
+// ignore: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
+
+// ✅ Correct import for web-only platformViewRegistry
+import 'dart:ui_web' as ui; // ✅
 
 class WeatherChartView extends StatefulWidget {
   final String url;
@@ -23,6 +34,7 @@ class _WeatherChartViewState extends State<WeatherChartView> {
     viewID = widget.url.hashCode.toString();
     _registerIframe(widget.url, viewID);
 
+    // Fallback if iframe doesn't load
     Future.delayed(const Duration(seconds: 5), () {
       if (mounted && !_isLoaded) {
         print("[WeatherChartView] Fallback: iframe didn't load in time.");
@@ -46,8 +58,7 @@ class _WeatherChartViewState extends State<WeatherChartView> {
 
       Future.delayed(const Duration(seconds: 5), () {
         if (mounted && !_isLoaded) {
-          print(
-              "[WeatherChartView] Fallback: updated iframe didn't load in time.");
+          print("[WeatherChartView] Fallback: updated iframe didn't load in time.");
           setState(() => _isLoaded = true);
         }
       });
