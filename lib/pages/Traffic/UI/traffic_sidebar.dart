@@ -122,12 +122,22 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
           ),
           const SizedBox(height: 12),
           Theme(
+<<<<<<< HEAD
             data: Theme.of(context).copyWith(
               tabBarTheme: TabBarThemeData(
                 labelColor: Colors.yellow[700],
                 unselectedLabelColor: Colors.white70,
               ),
             ),
+=======
+  data: Theme.of(context).copyWith(
+    tabBarTheme: TabBarThemeData(
+      labelColor: Colors.yellow[700],
+      unselectedLabelColor: Colors.white70,
+    ),
+  ),
+
+>>>>>>> main
 
             // Tab - List & Filters
             child: TabBar(

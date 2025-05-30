@@ -62,4 +62,8 @@ class HeatmapView extends StatelessWidget {
 }
 
 //git config --global user.name "Adham Soliman"
+<<<<<<< HEAD
 //git config --global user.email "adham.jsg@gmail.com"
+=======
+//git config --global user.email "adham.jsg@gmail.com"
+>>>>>>> main

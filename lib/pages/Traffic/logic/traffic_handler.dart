@@ -7,14 +7,13 @@
 // ====================================================
 
 // ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/chart_logic.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/traffic_logic.dart';
 
 mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
-  // UI state
+  // UI State Variables
   String? selectedType;
   String? selectedDate;
   String? selectedTime;
@@ -23,30 +22,43 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
 
   String? generatedUrl;
   String? barChartUrl;
+  String? pieChartUrl;
+  String? weatherChartUrl;
   bool isLoading = false;
+  bool lineChartReady = false;
 
   Map<String, dynamic> locationSnapshot = {};
   Map<String, dynamic>? barChartData;
 
+  VoidCallback? onResetLineChart;
+
+  // Helper Getters
   bool get hasRequiredFilters =>
       selectedType != null && selectedDate != null && selectedTime != null;
 
+  // Reset All State
   void handleReset() {
     setState(() {
       generatedUrl = null;
       barChartUrl = null;
+      pieChartUrl = null;
+      weatherChartUrl = null;
       selectedType = null;
       selectedDate = null;
       selectedTime = null;
       selectedYear = null;
       selectedSeason = null;
       locationSnapshot = {};
+      barChartData = null;
+      lineChartReady = false;
     });
+
+    onResetLineChart?.call();
   }
 
+  // Filter Handlers
   void handleTrafficTypeChange(String? type) {
     setState(() => selectedType = type);
-
     if (generatedUrl != null && hasRequiredFilters) {
       handleGenerate(
         type: type!,
@@ -60,7 +72,6 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
 
   void handleTimeChange(String? time) {
     setState(() => selectedTime = time);
-
     if (generatedUrl != null && hasRequiredFilters) {
       handleGenerate(
         type: selectedType!,
@@ -72,6 +83,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     }
   }
 
+  // Main Generate Handler
   Future<void> handleGenerate({
     required String type,
     required String date,
@@ -82,6 +94,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     print('Generating heatmap and charts...');
     setState(() {
       isLoading = true;
+      lineChartReady = false;
       selectedType = type;
       selectedDate = date;
       selectedTime = time;
@@ -92,37 +105,52 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     try {
       final formattedTime = time.contains(':00:00') ? time : '$time:00';
 
-      final results = await Future.wait([
-        TrafficLogic.generateHeatmap(date, formattedTime, type),
-        TrafficLogic.fetchSnapshot(date, formattedTime, type),
-        TrafficLogic.fetchSummaryStats(date, formattedTime, type),
-      ]);
-
-      final url = results[0] as String;
-      final snapshotList = results[1] as List;
-      final summaryData = results[2] as Map<String, dynamic>;
-
       final barUrl = ChartLogic.generateBarChartUrl(
         date: date,
         time: formattedTime,
         trafficType: type,
       );
+      final pieUrl = ChartLogic.generatePieChartUrl(date: date);
+      final weatherUrl = ChartLogic.generateWeatherChartUrl(trafficType: type);
+
+      final results = await Future.wait([
+        TrafficLogic.generateLineChart(date, type),
+        TrafficLogic.generateHeatmap(date, formattedTime, type),
+        TrafficLogic.fetchSnapshot(date, formattedTime, type),
+        TrafficLogic.fetchSummaryStats(date, formattedTime, type),
+        TrafficLogic.generatePieChart(date),
+        TrafficLogic.generateWeatherChart(type),
+      ]);
+
+      final heatmapUrl = results[1] as String;
+      final snapshotList = results[2] as List;
+      final summaryData = results[3] as Map<String, dynamic>;
 
       final snapshotMap = {
         for (var item in snapshotList) item['location']: item,
       };
 
-      final isReady = await _pingHeatmap(url);
+      final heatmapReady = await _pingUrl(heatmapUrl);
+      final pieReady = await _pingUrl(pieUrl);
+      final weatherReady = await _pingUrl(weatherUrl);
 
-      if (isReady) {
+      if (heatmapReady) {
         setState(() {
-          generatedUrl = "$url?t=${DateTime.now().millisecondsSinceEpoch}";
+          generatedUrl =
+              "$heatmapUrl?t=${DateTime.now().millisecondsSinceEpoch}";
           locationSnapshot = Map<String, dynamic>.from(snapshotMap);
           barChartData = summaryData['bar_chart'].cast<String, dynamic>();
           barChartUrl = barUrl;
+          pieChartUrl = pieReady
+              ? "$pieUrl?t=${DateTime.now().millisecondsSinceEpoch}"
+              : null;
+          weatherChartUrl = weatherReady
+              ? "$weatherUrl?t=${DateTime.now().millisecondsSinceEpoch}"
+              : null;
+          lineChartReady = true;
         });
       } else {
-        print("Heatmap HTML not ready yet.");
+        print("[Heatmap] HTML not ready.");
       }
     } catch (e) {
       print('Error in handleGenerate: $e');
@@ -131,7 +159,8 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     setState(() => isLoading = false);
   }
 
-  Future<bool> _pingHeatmap(String url) async {
+  // Ping URL to check if file is ready
+  Future<bool> _pingUrl(String url) async {
     try {
       final response =
           await http.head(Uri.parse(url)).timeout(const Duration(seconds: 2));

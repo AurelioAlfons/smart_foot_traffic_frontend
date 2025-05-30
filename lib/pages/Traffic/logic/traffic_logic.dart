@@ -80,4 +80,59 @@ class TrafficLogic {
       throw Exception('Summary stats fetch failed (${response.statusCode})');
     }
   }
+
+  /// Generate line chart HTML for given date and traffic type
+  static Future<void> generateLineChart(String date, String trafficType) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/generate_linechart'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'date': date,
+        'traffic_type': trafficType,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      print('[LineChart] Generated successfully: ${result['url']}');
+    } else {
+      print('[LineChart] Generation failed: ${response.body}');
+    }
+  }
+
+  /// Generate pie chart HTML for a given date
+  static Future<void> generatePieChart(String date) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/generate_piechart'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'date': date,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      print('[PieChart] Generated successfully: ${result['url']}');
+    } else {
+      print('[PieChart] Generation failed: ${response.body}');
+    }
+  }
+
+  /// Generate weather chart HTML for selected traffic type
+  static Future<void> generateWeatherChart(String trafficType) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/generate_weather_chart'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'traffic_type': trafficType,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      print('[WeatherChart] Generated or exists: ${result['url']}');
+    } else {
+      print('[WeatherChart] Generation failed: ${response.body}');
+    }
+  }
 }

@@ -32,6 +32,9 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
   bool hoveringNavZone = false;
   String? searchQuery;
 
+  final GlobalKey<DashboardPanelState> dashboardKey =
+      GlobalKey<DashboardPanelState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,12 +105,19 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
                                       selectedTime != null &&
                                       selectedType != null)
                                   ? DashboardPanel(
+                                      key: dashboardKey,
                                       date: selectedDate!,
                                       time: selectedTime!,
                                       trafficType: selectedType!,
                                       barChartUrl: barChartUrl,
+                                      pieChartUrl: pieChartUrl,
+                                      weatherChartUrl: weatherChartUrl,
                                       isPlaceholder: false,
                                       isLoading: isLoading,
+                                      lineChartReady: lineChartReady,
+                                      onResetLineChart: () => dashboardKey
+                                          .currentState
+                                          ?.resetLineChart(),
                                     )
                                   : const DashboardPanel(isPlaceholder: true),
                             ],
