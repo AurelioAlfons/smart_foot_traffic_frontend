@@ -1,8 +1,19 @@
+// ====================================================
+// Line Chart View (Web Only)
+// ----------------------------------------------------
+// - Embeds HTML iframe to show line chart URL
+// - Registers a unique view ID for each chart
+// - Shows loader until iframe finishes loading
+// ====================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:ui' as ui;
-// ignore: avoid_web_libraries_in_flutter
+
+// ignore: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
+
+// ✅ Correct import for web-only platformViewRegistry
+import 'dart:ui_web' as ui; // ✅
 
 class LineChartView extends StatefulWidget {
   final String url;
@@ -23,7 +34,6 @@ class _LineChartViewState extends State<LineChartView> {
     viewID = widget.url.hashCode.toString();
     _registerIframe(widget.url, viewID);
 
-    // Fallback timeout in case iframe doesn't trigger onLoad
     Future.delayed(const Duration(seconds: 5), () {
       if (mounted && !_isLoaded) {
         print("[LineChartView] Fallback: iframe didn't load in time.");
@@ -45,7 +55,6 @@ class _LineChartViewState extends State<LineChartView> {
         viewID = newViewID;
       });
 
-      // Fallback timeout again
       Future.delayed(const Duration(seconds: 5), () {
         if (mounted && !_isLoaded) {
           print(
