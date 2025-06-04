@@ -82,13 +82,13 @@ class _BarChartViewState extends State<BarChartView> {
           key: ValueKey(widget.url),
         ),
         if (!_isLoaded)
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: LinearProgressIndicator(
-                color: Colors.yellow[700],
-                backgroundColor: Colors.black26,
+          Positioned.fill(
+            child: ColoredBox(
+              color: Colors.white,
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: Colors.yellow[700],
+                ),
               ),
             ),
           ),
