@@ -9,10 +9,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-// ✅ Use web-specific libraries for iframe
 // ignore: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
-import 'dart:ui_web' as ui; // ✅ Updated from 'dart:ui' to 'dart:ui_web'
+import 'dart:ui_web' as ui;
 
 class BarChartView extends StatefulWidget {
   final String url;
@@ -31,7 +30,7 @@ class _BarChartViewState extends State<BarChartView> {
   void initState() {
     super.initState();
     viewID = widget.url.hashCode.toString();
-    _registerIframe(widget.url, viewID); // ✅
+    _registerIframe(widget.url, viewID);
   }
 
   @override
@@ -39,9 +38,8 @@ class _BarChartViewState extends State<BarChartView> {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.url != widget.url && kIsWeb) {
-      // ✅
       final newViewID = widget.url.hashCode.toString();
-      _registerIframe(widget.url, newViewID); // ✅
+      _registerIframe(widget.url, newViewID);
 
       setState(() {
         _isLoaded = false;
@@ -51,7 +49,7 @@ class _BarChartViewState extends State<BarChartView> {
   }
 
   void _registerIframe(String url, String id) {
-    if (!kIsWeb) return; // ✅ only for web
+    if (!kIsWeb) return;
 
     final iframe = html.IFrameElement()
       ..src = url
@@ -62,13 +60,11 @@ class _BarChartViewState extends State<BarChartView> {
       ..onLoad.listen((_) {
         html.window.dispatchEvent(html.Event('resize'));
         if (mounted) {
-          setState(() => _isLoaded = true); // ✅ loader toggle
+          setState(() => _isLoaded = true);
         }
       });
 
-    // ✅ register the iframe element to be rendered in Flutter web
-    ui.platformViewRegistry
-        .registerViewFactory(id, (int viewId) => iframe); // ✅
+    ui.platformViewRegistry.registerViewFactory(id, (int viewId) => iframe);
   }
 
   @override
@@ -86,11 +82,13 @@ class _BarChartViewState extends State<BarChartView> {
           key: ValueKey(widget.url),
         ),
         if (!_isLoaded)
-          const Positioned.fill(
-            child: ColoredBox(
-              color: Colors.white,
-              child: Center(
-                child: CircularProgressIndicator(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: LinearProgressIndicator(
+                color: Colors.yellow[700],
+                backgroundColor: Colors.black26,
               ),
             ),
           ),

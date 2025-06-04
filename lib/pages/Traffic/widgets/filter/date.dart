@@ -101,8 +101,6 @@ class _DateDropdownState extends State<DateDropdown> {
                     surface: const Color(0xFF1C1C1C),
                     onSurface: Colors.yellow[700]!,
                   ),
-                  // ignore: deprecated_member_use
-                  dialogBackgroundColor: const Color(0xFF1C1C1C),
                 ),
                 child: Container(
                   width: 320,
