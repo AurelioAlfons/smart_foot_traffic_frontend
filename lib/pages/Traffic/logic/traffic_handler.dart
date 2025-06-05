@@ -25,6 +25,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
   String? generatedUrl;
   String? barChartUrl;
   String? pieChartUrl;
+  String? forecastChartUrl;
   bool isLoading = false;
   bool lineChartReady = false;
 
@@ -47,6 +48,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
       generatedUrl = null;
       barChartUrl = null;
       pieChartUrl = null;
+      forecastChartUrl = null;
       selectedType = null;
       selectedDate = null;
       selectedTime = null;
@@ -119,6 +121,8 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
         trafficType: type,
       );
       final pieUrl = ChartLogic.generatePieChartUrl(date: date);
+      final forecastUrl =
+          ChartLogic.generateForecastChartUrl(trafficType: type);
 
       // Step 1: Run all async tasks in parallel
       final results = await Future.wait([
@@ -127,6 +131,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
         TrafficLogic.fetchSnapshot(date, formattedTime, type), // [2]
         TrafficLogic.fetchSummaryStats(date, formattedTime, type), // [3]
         TrafficLogic.generatePieChart(date), // [4]
+        TrafficLogic.generateForecastChart(type), // [5]
       ]);
 
       final heatmapUrl = results[1] as String;
@@ -137,9 +142,10 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
         for (var item in snapshotList) item['location']: item,
       };
 
-      // Step 2: Confirm heatmap + pie are ready
+      // Step 2: Confirm HTMLs are ready
       final heatmapReady = await _pingUrl(heatmapUrl);
       final pieReady = await _pingUrl(pieUrl);
+      final forecastReady = await _pingUrl(forecastUrl);
 
       if (heatmapReady) {
         setState(() {
@@ -150,6 +156,9 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
           barChartUrl = barUrl;
           pieChartUrl = pieReady
               ? "$pieUrl?t=${DateTime.now().millisecondsSinceEpoch}"
+              : null;
+          forecastChartUrl = forecastReady
+              ? "$forecastUrl?t=${DateTime.now().millisecondsSinceEpoch}"
               : null;
           lineChartReady = true;
         });
@@ -164,7 +173,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
   }
 
   // ==============================
-  // Ping URL (for both heatmap and pie)
+  // Ping URL (for heatmap, pie, forecast)
   // ==============================
   Future<bool> _pingUrl(String url) async {
     try {

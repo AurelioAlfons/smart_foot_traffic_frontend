@@ -111,6 +111,7 @@ class TrafficScreenState extends State<TrafficScreen> with TrafficHandlers {
                                       trafficType: selectedType!,
                                       barChartUrl: barChartUrl,
                                       pieChartUrl: pieChartUrl,
+                                      forecastChartUrl: forecastChartUrl,
                                       isPlaceholder: false,
                                       isLoading: isLoading,
                                       lineChartReady: lineChartReady,

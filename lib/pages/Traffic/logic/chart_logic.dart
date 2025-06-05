@@ -1,7 +1,7 @@
 // ====================================================
 // Chart Logic Generator - Local/Cloud Toggle
 // ----------------------------------------------------
-// - Builds safe bar chart URL using date, time, and type
+// - Builds safe bar, line, pie, forecast chart URLs
 // - Comment/uncomment the baseUrl line below to switch env
 // ====================================================
 
@@ -37,5 +37,12 @@ class ChartLogic {
     required String date,
   }) {
     return '$baseUrl/piecharts/pie_dashboard_$date.html';
+  }
+
+  static String generateForecastChartUrl({
+    required String trafficType,
+  }) {
+    final safeType = trafficType.replaceAll(' ', '_').toLowerCase();
+    return '$baseUrl/forecast/forecast_chart_$safeType.html';
   }
 }

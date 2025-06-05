@@ -1,13 +1,14 @@
 // ===============================
 // Dashboard Panel
 // -------------------------------
-// Shows bar, line, pie charts
+// Shows bar, line, pie, and forecast charts
 // Switches layout on small screens
 // Handles loading and updates
 // ===============================
 
 import 'package:flutter/material.dart';
 import 'package:smart_foot_traffic_frontend/components/tools/bar_chart/barchart_card.dart';
+import 'package:smart_foot_traffic_frontend/components/tools/forecast/forecast_card.dart';
 import 'package:smart_foot_traffic_frontend/components/tools/line_chart/linechart_card.dart';
 import 'package:smart_foot_traffic_frontend/components/tools/pie_chart/piechart_card.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/chart_logic.dart';
@@ -18,10 +19,10 @@ class DashboardPanel extends StatefulWidget {
   final String? trafficType;
   final String? barChartUrl;
   final String? pieChartUrl;
+  final String? forecastChartUrl;
   final bool isPlaceholder;
   final bool isLoading;
   final bool lineChartReady;
-
   final VoidCallback? onResetLineChart;
 
   const DashboardPanel({
@@ -31,6 +32,7 @@ class DashboardPanel extends StatefulWidget {
     this.trafficType,
     this.barChartUrl,
     this.pieChartUrl,
+    this.forecastChartUrl,
     this.isPlaceholder = false,
     this.isLoading = false,
     this.lineChartReady = false,
@@ -112,6 +114,10 @@ class DashboardPanelState extends State<DashboardPanel> {
         ? PieChartCard(url: widget.pieChartUrl!)
         : null;
 
+    final forecastWidget = widget.forecastChartUrl != null
+        ? ForecastCard(chartUrl: widget.forecastChartUrl!)
+        : null;
+
     return Stack(
       children: [
         Padding(
@@ -158,7 +164,7 @@ class DashboardPanelState extends State<DashboardPanel> {
                     const SizedBox(height: 12),
                     SizedBox(
                       height: 550,
-                      child: _buildChartBox("Insights / Stats", null),
+                      child: _buildChartBox("Forecast Chart", forecastWidget),
                     ),
                   ],
                 )
@@ -179,7 +185,7 @@ class DashboardPanelState extends State<DashboardPanel> {
                       lineChartWidget,
                     ),
                     _buildChartBox("Pie Chart", pieChartWidget),
-                    _buildChartBox("Insights / Stats", null),
+                    _buildChartBox("Forecast Chart", forecastWidget),
                   ],
                 ),
         ),
