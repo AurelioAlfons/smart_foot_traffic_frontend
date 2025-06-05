@@ -21,9 +21,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// To run the app in web mode, use the following command:
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/* 
-cd build/web 
-python -m http.server 8080
-*/
+// PS C:\Capstone\smart_foot_traffic_frontend> flutter build web --base-href="/smart_foot_traffic_frontend/" --dart-define=API_BASE_URL=https://smart-foot-traffic-backend.onrender.com                                            
+// flutter pub global run peanut --release --extra-args="--base-href=/smart_foot_traffic_frontend/" 
+// git push origin gh-pages

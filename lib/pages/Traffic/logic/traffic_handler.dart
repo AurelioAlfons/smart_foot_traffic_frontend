@@ -6,7 +6,6 @@
 // - Calls backend logic to fetch heatmap and summary data
 // ====================================================
 
-// ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_foot_traffic_frontend/pages/Traffic/logic/chart_logic.dart';
@@ -29,6 +28,8 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
   bool isLoading = false;
   bool lineChartReady = false;
 
+  bool userTriggeredGenerate = false;
+
   Map<String, dynamic> locationSnapshot = {};
   Map<String, dynamic>? barChartData;
 
@@ -39,6 +40,8 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
   // ==============================
   bool get hasRequiredFilters =>
       selectedType != null && selectedDate != null && selectedTime != null;
+
+  bool get isAutoRefreshable => userTriggeredGenerate && hasRequiredFilters;
 
   // ==============================
   // Reset All State
@@ -57,17 +60,18 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
       locationSnapshot = {};
       barChartData = null;
       lineChartReady = false;
+      userTriggeredGenerate = false;
     });
 
     onResetLineChart?.call();
   }
 
   // ==============================
-  // Filter Handlers
+  // Filter Handlers (auto-refresh only on time/type)
   // ==============================
   void handleTrafficTypeChange(String? type) {
     setState(() => selectedType = type);
-    if (generatedUrl != null && hasRequiredFilters) {
+    if (isAutoRefreshable) {
       handleGenerate(
         type: type!,
         date: selectedDate!,
@@ -80,7 +84,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
 
   void handleTimeChange(String? time) {
     setState(() => selectedTime = time);
-    if (generatedUrl != null && hasRequiredFilters) {
+    if (isAutoRefreshable) {
       handleGenerate(
         type: selectedType!,
         date: selectedDate!,
@@ -89,6 +93,18 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
         season: selectedSeason,
       );
     }
+  }
+
+  void handleDateChange(String? date) {
+    setState(() => selectedDate = date);
+  }
+
+  void handleYearChange(String? year) {
+    setState(() => selectedYear = year);
+  }
+
+  void handleSeasonChange(String? season) {
+    setState(() => selectedSeason = season);
   }
 
   // ==============================
@@ -105,6 +121,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     setState(() {
       isLoading = true;
       lineChartReady = false;
+      userTriggeredGenerate = true;
       selectedType = type;
       selectedDate = date;
       selectedTime = time;
