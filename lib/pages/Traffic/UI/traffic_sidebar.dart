@@ -9,6 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_foot_traffic_frontend/components/buttons/hover.dart';
 import 'package:smart_foot_traffic_frontend/components/buttons/search.dart';
+import 'package:smart_foot_traffic_frontend/components/tools/export/export_report.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/widgets/filter/filter_tab.dart';
 import 'package:smart_foot_traffic_frontend/pages/Traffic/widgets/location/location_tab.dart';
 
@@ -32,7 +33,6 @@ class TrafficSidebar extends StatefulWidget {
   final void Function(String?) onTimeChanged;
   final void Function(String?) onDateChanged;
   final Map<String, dynamic>? snapshotData;
-
   final String? searchQuery;
   final void Function(String)? onSearchChanged;
 
@@ -76,13 +76,11 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
             children: [
               Row(
                 children: [
-                  // Menu button with hover effect
                   HoverableIconButton(
                     onPressed: () {},
                     icon: const Icon(Icons.menu),
                   ),
                   const SizedBox(width: 6),
-                  // Title
                   const Text(
                     "Footscray Traffic",
                     style: TextStyle(
@@ -94,18 +92,27 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
                 ],
               ),
               InkWell(
-                onTap: () {},
+                onTap: () => downloadReport(
+                  context: context,
+                  date: widget.selectedDate,
+                  time: widget.selectedTime,
+                  trafficType: widget.selectedTrafficType,
+                ),
                 hoverColor: Colors.transparent,
                 child: Row(
                   children: [
-                    // Login - To be implemented
                     HoverableIconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.person),
+                      onPressed: () => downloadReport(
+                        context: context,
+                        date: widget.selectedDate,
+                        time: widget.selectedTime,
+                        trafficType: widget.selectedTrafficType,
+                      ),
+                      icon: const Icon(Icons.downloading_sharp),
                     ),
                     const SizedBox(width: 4),
                     const Text(
-                      "Login",
+                      "Export",
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -114,8 +121,6 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
             ],
           ),
           const SizedBox(height: 12),
-
-          // Search bar for location search
           LocationSearchBar(
             query: widget.searchQuery,
             onChanged: widget.onSearchChanged!,
@@ -128,19 +133,15 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
                 unselectedLabelColor: Colors.white70,
               ),
             ),
-
-            // Tab - List & Filters
             child: TabBar(
               indicatorColor: Colors.yellow[700],
               tabs: const [
-                // List
                 Tab(
                   child: Text(
                     'List',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                 ),
-                // Filters
                 Tab(
                   child: Text(
                     'Filters',
@@ -153,13 +154,11 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
           Expanded(
             child: TabBarView(
               children: [
-                // Location List Tab
                 LocationTab(
                   snapshotData: widget.snapshotData,
                   onLocationTap: widget.onLocationTap,
                   searchQuery: widget.searchQuery,
                 ),
-                // Filters Tab
                 _buildFiltersTab(),
               ],
             ),
@@ -169,7 +168,6 @@ class _TrafficSidebarState extends State<TrafficSidebar> {
     );
   }
 
-  // Builds the Filters tab with all filter options
   Widget _buildFiltersTab() {
     return FilterTab(
       selectedType: widget.selectedTrafficType,
