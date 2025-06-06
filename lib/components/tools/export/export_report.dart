@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:web/web.dart' as web;
 
 Future<void> downloadReport({
   required BuildContext context,
@@ -7,6 +8,7 @@ Future<void> downloadReport({
   required String? time,
   required String? trafficType,
 }) async {
+  // Validation
   if (date == null || time == null || trafficType == null) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -25,32 +27,37 @@ Future<void> downloadReport({
 
   try {
     final response = await http.get(uri);
+
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          backgroundColor: Colors.green,
           content: Text('Report successfully generated and saved.'),
+          backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
           duration: Duration(milliseconds: 600),
         ),
       );
+
+      // ✅ Open report in new tab using modern `web` package
+      final reportUrl = 'http://localhost:5000/downloads/report_$date.html';
+      web.window.open(reportUrl, '_blank');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: Colors.orange,
           content: Text('Failed to generate report: ${response.body}'),
+          backgroundColor: Colors.orange,
           behavior: SnackBarBehavior.floating,
-          duration: Duration(milliseconds: 600),
+          duration: const Duration(milliseconds: 600),
         ),
       );
     }
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: Colors.red,
         content: Text('Error: $e'),
+        backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
-        duration: Duration(milliseconds: 600),
+        duration: const Duration(milliseconds: 600),
       ),
     );
   }
