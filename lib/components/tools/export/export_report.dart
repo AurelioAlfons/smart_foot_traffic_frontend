@@ -15,7 +15,7 @@ Future<void> downloadReport({
         content: Text('Please select Date, Time, and Traffic Type first.'),
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
-        duration: Duration(milliseconds: 600),
+        duration: Duration(milliseconds: 1600),
       ),
     );
     return;
@@ -34,11 +34,11 @@ Future<void> downloadReport({
           content: Text('Report successfully generated and saved.'),
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
-          duration: Duration(milliseconds: 600),
+          duration: Duration(milliseconds: 1600),
         ),
       );
 
-      // ✅ Open report in new tab using modern `web` package
+      // Open report in new tab using modern `web` package
       final reportUrl = 'http://localhost:5000/downloads/report_$date.html';
       web.window.open(reportUrl, '_blank');
     } else {
@@ -47,7 +47,7 @@ Future<void> downloadReport({
           content: Text('Failed to generate report: ${response.body}'),
           backgroundColor: Colors.orange,
           behavior: SnackBarBehavior.floating,
-          duration: const Duration(milliseconds: 600),
+          duration: const Duration(milliseconds: 1600),
         ),
       );
     }
@@ -57,7 +57,7 @@ Future<void> downloadReport({
         content: Text('Error: $e'),
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(milliseconds: 600),
+        duration: const Duration(milliseconds: 1600),
       ),
     );
   }

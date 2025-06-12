@@ -12,8 +12,8 @@ import 'package:flutter/material.dart';
 // ignore: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
 
-// ✅ Correct import for web-only platformViewRegistry
-import 'dart:ui_web' as ui; // ✅
+// Correct import for web-only platformViewRegistry
+import 'dart:ui_web' as ui;
 
 class HeatmapView extends StatelessWidget {
   final String heatmapUrl;

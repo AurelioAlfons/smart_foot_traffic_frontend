@@ -62,7 +62,7 @@ class _FilterTabState extends State<FilterTab> {
         content: Text(message),
         backgroundColor: Colors.red[700],
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(milliseconds: 600),
+        duration: const Duration(milliseconds: 1600),
       ),
     );
   }
