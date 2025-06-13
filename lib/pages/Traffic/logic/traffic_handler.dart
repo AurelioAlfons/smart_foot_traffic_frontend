@@ -132,6 +132,7 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
     try {
       final formattedTime = time.contains(':00:00') ? time : '$time:00';
 
+      // Calls the chart logic for the path name
       final barUrl = ChartLogic.generateBarChartUrl(
         date: date,
         time: formattedTime,
@@ -164,8 +165,10 @@ mixin TrafficHandlers<T extends StatefulWidget> on State<T> {
       final pieReady = await _pingUrl(pieUrl);
       final forecastReady = await _pingUrl(forecastUrl);
 
+      // If the result is ready
       if (heatmapReady) {
         setState(() {
+          // Then pass it into the variables to be display
           generatedUrl =
               "$heatmapUrl?t=${DateTime.now().millisecondsSinceEpoch}";
           locationSnapshot = Map<String, dynamic>.from(snapshotMap);

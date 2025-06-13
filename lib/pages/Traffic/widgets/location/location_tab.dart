@@ -24,10 +24,12 @@ class LocationTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Filter locations based on search query
     final filteredLocations = allLocations
         .where((location) =>
             searchQuery == null ||
             searchQuery!.isEmpty ||
+            // Use lowe
             location.toLowerCase().contains(searchQuery!.toLowerCase()))
         .toList()
       ..sort();
@@ -83,6 +85,7 @@ class _CustomExpansionTileState extends State<_CustomExpansionTile> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // Location name
                 Expanded(
                   child: Text(
                     widget.location,
@@ -96,6 +99,7 @@ class _CustomExpansionTileState extends State<_CustomExpansionTile> {
                   ),
                 ),
                 const SizedBox(width: 20),
+                // Dropdown arrow
                 Icon(
                   _expanded ? Icons.expand_less : Icons.expand_more,
                   color: Colors.white,
@@ -106,11 +110,15 @@ class _CustomExpansionTileState extends State<_CustomExpansionTile> {
         ),
         AnimatedCrossFade(
           duration: const Duration(milliseconds: 200),
+          // If expanded show details, otherwise show nothing
           crossFadeState:
               _expanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          // Call the LocationDetailsPanel with the data
           firstChild: LocationDetailsPanel(data: widget.data),
+          // Empty when closed
           secondChild: const SizedBox.shrink(),
         ),
+        // Add divider between items
         const Divider(
           color: Colors.white24,
           height: 1,

@@ -30,6 +30,7 @@ class HeatmapView extends StatelessWidget {
     final viewType = 'heatmap-${heatmapUrl.hashCode}';
     print("📡 iframe loading: $heatmapUrl");
 
+    // To register HTML iframe
     if (kIsWeb) {
       ui.platformViewRegistry.registerViewFactory(
         viewType,
@@ -50,6 +51,7 @@ class HeatmapView extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.all(16),
+              // Spinner
               child: LinearProgressIndicator(
                 color: Colors.yellow[700],
                 backgroundColor: Colors.black26,

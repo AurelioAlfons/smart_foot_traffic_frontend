@@ -49,6 +49,7 @@ class _ForecastChartViewState extends State<ForecastChartView> {
   }
 
   void _registerIframe(String url, String id) {
+    // To register HTML iframe
     if (!kIsWeb) return;
 
     final iframe = html.IFrameElement()
@@ -69,6 +70,7 @@ class _ForecastChartViewState extends State<ForecastChartView> {
 
   @override
   Widget build(BuildContext context) {
+    // To register HTML iframe
     if (!kIsWeb) {
       return const Center(
         child: Text('Forecast chart is only supported on Flutter Web'),
@@ -86,6 +88,7 @@ class _ForecastChartViewState extends State<ForecastChartView> {
             child: ColoredBox(
               color: Colors.white,
               child: Center(
+                // Spinner
                 child: CircularProgressIndicator(
                   color: Colors.yellow[700],
                 ),

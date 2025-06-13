@@ -28,6 +28,7 @@ class _HoverableIconButtonState extends State<HoverableIconButton> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
+      // If hover
       onEnter: (_) => setState(() => _hovering = true),
       onExit: (_) => setState(() => _hovering = false),
       child: GestureDetector(

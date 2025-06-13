@@ -50,6 +50,7 @@ class DashboardPanelState extends State<DashboardPanel> {
   void didUpdateWidget(covariant DashboardPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    // Reset line chart if the reset callback is provided
     final currentUrl = (widget.date != null && widget.trafficType != null)
         ? ChartLogic.generateLineChartUrl(
             date: widget.date!, trafficType: widget.trafficType!)
@@ -68,6 +69,7 @@ class DashboardPanelState extends State<DashboardPanel> {
     });
   }
 
+  // Custom widget to build the box
   Widget _buildChartBox(String title, Widget? child) {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -105,8 +107,11 @@ class DashboardPanelState extends State<DashboardPanel> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    // Determine if the screen is a laptop based on width
+    // Can be adjusted based on requirements
     final isLaptop = screenWidth < 1380;
 
+    // If no data yet, show a placeholder message
     final lineChartWidget =
         lastLineChartUrl != null ? LineChartCard(url: lastLineChartUrl!) : null;
 
@@ -118,15 +123,20 @@ class DashboardPanelState extends State<DashboardPanel> {
         ? ForecastCard(chartUrl: widget.forecastChartUrl!)
         : null;
 
+    // Stack - allows for overlaying widgets
     return Stack(
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
+          // If the screen is laptop
+          // Then use this layout
+          // Only 1 box per row
           child: isLaptop
               ? ListView(
                   children: [
                     SizedBox(
                       height: 550,
+                      // Build the chart box for Bar Chart
                       child: _buildChartBox(
                         "Bar Chart",
                         widget.barChartUrl == null
@@ -147,6 +157,7 @@ class DashboardPanelState extends State<DashboardPanel> {
                                 child: ColoredBox(
                                   color: Colors.white70,
                                   child: Center(
+                                    // Spinner
                                     child: CircularProgressIndicator(
                                         color: Colors.yellow),
                                   ),
@@ -168,6 +179,7 @@ class DashboardPanelState extends State<DashboardPanel> {
                     ),
                   ],
                 )
+              // If bigger screen then display 2 box per row
               : GridView.count(
                   crossAxisCount: 2,
                   mainAxisSpacing: 12,
@@ -189,6 +201,8 @@ class DashboardPanelState extends State<DashboardPanel> {
                   ],
                 ),
         ),
+        // If loading display the progress bar on top again
+        // Like heatmap generation
         if (widget.isLoading)
           Align(
             alignment: Alignment.topCenter,

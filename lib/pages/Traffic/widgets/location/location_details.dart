@@ -15,6 +15,7 @@ class LocationDetailsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // If no data yet, show a placeholder message
     if (data == null) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 12),
@@ -25,12 +26,15 @@ class LocationDetailsPanel extends StatelessWidget {
       );
     }
 
+    // Extract and format the relevant data
+    // Variables for each field
     final rawTime = data?['time']?.toString() ?? '';
     final timeDisplay = rawTime.isNotEmpty ? _formatTimeRange(rawTime) : 'N/A';
 
     final temp = data?['temperature'];
     final temperatureDisplay = temp != null ? "$temp°C" : 'N/A';
 
+    // Build the details column
     return Column(
       children: [
         _info(Icons.directions_car, "Type",
@@ -51,10 +55,12 @@ class LocationDetailsPanel extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: Row(
         children: [
+          // Icon, title, and value in a row
           Icon(icon, size: 20, color: Colors.white54),
           const SizedBox(width: 12),
           Expanded(
             flex: 6,
+            // Calling the title with a colon
             child: Text(
               "$title:",
               style: const TextStyle(
