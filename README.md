@@ -67,12 +67,42 @@ You can run the app in multiple ways:
 
 ```
 lib/
-├── components/        # Reusable widgets (dropdowns, charts, buttons)
-├── pages/             # Main UI screens
-├── services/          # API integration logic
-├── routing/           # Route configuration
-└── main.dart          # App entry point
+├── components/
+│   └── buttons/
+│       ├── hover.dart
+│       └── search.dart
+│
+├── tools/
+│   ├── bar_chart/
+│   ├── export/
+│   ├── forecast/
+│   ├── heatmap/
+│   ├── line_chart/
+│   └── pie_chart/
+│
+├── pages/
+│   └── Traffic/
+│       ├── logic/
+│       │   ├── chart_logic.dart
+│       │   ├── traffic_handler.dart
+│       │   └── traffic_logic.dart
+│       ├── UI/
+│       │   ├── dashboard.dart
+│       │   ├── traffic_screen.dart
+│       │   └── traffic_sidebar.dart
+│       └── widgets/
+│           ├── filter/
+│           └── location/
+│
+└── main.dart
 ```
+
+- `components/buttons/`: Custom interactive buttons
+- `tools/`: Backend API integration and chart generation logic
+- `pages/Traffic/logic/`: Handles data processing and state management
+- `pages/Traffic/UI/`: Core layout and visual structure
+- `pages/Traffic/widgets/`: Reusable UI components like filters and location selectors
+
 
 ---
 
